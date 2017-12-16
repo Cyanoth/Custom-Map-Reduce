@@ -7,30 +7,44 @@ import java.util.logging.Logger;
 
 public class Mapper implements Callable<ArrayList<KeyValuePair>> {
     private static final Logger LOGGER = Logger.getLogger(Mapper.class.getName());
-    private final int mapperID;
-    private final ArrayList<PassengerEntry> dataChunk;
-    private final String compareKey; //TODO: Probably used for a later objective, so leaving in.
+    private final int mMapperID;
 
-    public Mapper(ArrayList<PassengerEntry> dataChunk, String keyName, int mapperID)
+    //CONSIDER: Add 'mode' variable for simple mapper or combiner & mapper (first uses ArrayList, second uses HashMap)?
+    private ArrayList<PassengerEntry> mDataChunk;
+    private String compareKey; //TODO: Will Probably used for a later objective, so leaving in.
+
+    public Mapper(String keyName, int mapperID)
     {
-        //TODO: Systmatic Checking should take place in this function.
-        this.dataChunk = dataChunk;
+        this.mDataChunk = new ArrayList<>();
         this.compareKey = keyName;
-        this.mapperID = mapperID;
-        LOGGER.log(Level.FINE, "A Mapper with the ID: " + mapperID + " has been setup and is ready to run.");
+        this.mMapperID = mapperID;
+        LOGGER.log(Level.FINE, "A Mapper with the ID: " + mMapperID + " has been initialized!");
+    }
+
+    public int addPassengerEntry(PassengerEntry obj) {
+        //TODO: Systmatic Checking should take place in this function.
+        //TODO: Check this does not exceed MAX_ChunkSize
+        try {
+            mDataChunk.add(obj);
+            LOGGER.log(Level.FINE, "Added an entity to the mapper: " + mMapperID);
+            return 0; //return success.
+        }
+        catch (Exception e) {
+            return -1;
+        }
     }
 
     @Override
-    public ArrayList<KeyValuePair> call() {
-        LOGGER.log(Level.INFO, "A Mapper with the ID: " + mapperID + " has started!");
+    public ArrayList<KeyValuePair> call() { //Returns mapped results
+        //TODO: Checker mapper has entities
+        LOGGER.log(Level.INFO, "A Mapper with the ID: " + mMapperID + " has started!");
         ArrayList<KeyValuePair> mappedEntries = new ArrayList<>();
 
-        for (int i = 0; i < dataChunk.size(); i++) {
-            KeyValuePair entry = new KeyValuePair(dataChunk.get(i).getFromAirport(), 1); //TODO: change this into 'keyName'
+        for (int i = 0; i < mDataChunk.size(); i++) {
+            KeyValuePair entry = new KeyValuePair(mDataChunk.get(i).getFromAirport(), 1); //TODO: change this into 'keyName'
             mappedEntries.add(entry);
-
         }
-        LOGGER.log(Level.FINE, "Execution of mapper thread " + mapperID + " has completed.");
+        LOGGER.log(Level.FINE, "Execution of mapper thread " + mMapperID + " has completed.");
         return mappedEntries;
     }
 }

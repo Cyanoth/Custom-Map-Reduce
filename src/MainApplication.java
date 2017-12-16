@@ -11,7 +11,9 @@ public class    MainApplication
     //TODO: Change hardcoded paths into command line arguments and test if they exist/not null
     public static void main(String[] args){
         LOGGER.log(Level.INFO, "Application Started");
-        Objective1.startObjective1();
+        Objective1 testObjective1 = new Objective1(); //does this need parameters?
+        testObjective1.startObjective1();
+
     }
 
 }

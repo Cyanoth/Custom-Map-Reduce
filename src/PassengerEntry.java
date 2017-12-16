@@ -50,4 +50,6 @@ public class PassengerEntry {
     {
         System.out.println("Parsing Error! ");
     }
+
+    //TODO: Add a tostring function
 }
