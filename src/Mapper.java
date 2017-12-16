@@ -10,7 +10,7 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
     private final int mMapperID;
 
     //CONSIDER: Add 'mode' variable for simple mapper or combiner & mapper (first uses ArrayList, second uses HashMap)?
-    private ArrayList<PassengerEntry> mDataChunk;
+    private ArrayList<PassengerEntry> mDataChunk; //TODO: this should be an array with MAX_DATAChunk?
     private String compareKey; //TODO: Will Probably used for a later objective, so leaving in.
 
     public Mapper(String keyName, int mapperID)

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -5,19 +6,34 @@ import java.util.logging.Logger;
 /**
  * Created by Charlie on 09/11/2017.
  */
-public class Reducer implements Callable<String>{
+public class Reducer implements Callable<KeyValuePair> {
     private static final Logger LOGGER = Logger.getLogger(Reducer.class.getName());
 
-    private final KeyValuePair[] pairs;
+    private ArrayList<KeyValuePair> mStoredKeysValuePairs;
+    private final int mReducerID;
 
-    public Reducer(KeyValuePair[] pairs, String keyName, int reducerThreadID) {
-        this.pairs = pairs;
-        LOGGER.log(Level.FINE, "A reducer with the threadID: " + reducerThreadID + " has been setup and is ready to start.");
+
+
+    public Reducer(String keyName, int reducerThreadID) { //TODO: is keyName really necessary for a reducer?!
+
+        this.mReducerID = reducerThreadID;
+        mStoredKeysValuePairs = new ArrayList<>();
+        LOGGER.log(Level.FINE, "A Reducer with the ID: " + mReducerID + " has been initialized!");
     }
 
+    public int addKeyValuePair(KeyValuePair obj) {
+          try {
+             mStoredKeysValuePairs.add(obj);
+             LOGGER.log(Level.FINE, "Added an entity to the reducer: " + mReducerID);
+             return 0; //return success.
+        }
+        catch (Exception e) {
+            return -1;
+        }
+    }
 
     @Override
-    public String call() throws Exception {
-        return null;
+    public KeyValuePair call() throws Exception {
+        return new KeyValuePair(mStoredKeysValuePairs.get(0).getKey1(), mStoredKeysValuePairs.size());
     }
 }

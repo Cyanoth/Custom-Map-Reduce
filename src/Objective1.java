@@ -12,7 +12,8 @@ public class Objective1 {
     private static final Logger LOGGER = Logger.getLogger(Objective1.class.getName());
 
     private ArrayList<PassengerEntry> parsedPassengerDataFile;
-    private Mapper[] mMappers; // Todo: Change into an array, then set to maximum 'mappers'. Pause until a mapper thread is avaliable.
+
+    private Mapper[] mMappers;
     private ArrayList<Reducer> mReducers = new ArrayList<>();
 
     //String - Output String.
@@ -30,7 +31,12 @@ public class Objective1 {
         testing_PauseProgram();
         executeMappers();
         testing_PauseProgram();
+
         shuffleSortMappedData();
+        testing_PauseProgram();
+
+        setupReducerObjects();
+        System.out.println("I'm here.");
 
         return 0;
     }
@@ -85,7 +91,7 @@ public class Objective1 {
 
     private void executeMappers()
     {
-        LOGGER.log(Level.INFO, "Now executing each mapper..."); //TODO: Limit to MAX_RUNNING_MAPPERS at anyone time.
+        LOGGER.log(Level.INFO, "Executing Mappers... Wait..."); //TODO: Limit to MAX_RUNNING_MAPPERS at anyone time.
         for (Mapper singleMapper : mMappers) { //Execute Each Mapper
             try {
                 totalMappedEntites.addAll(singleMapper.call());
@@ -102,13 +108,30 @@ public class Objective1 {
         LOGGER.log(Level.INFO, "Shuffle Sort Completed!");
     }
 
-    private static void reduceEntites()
+    private void setupReducerObjects() //TODO: Pass in as parameter rather than global variable?
     {
+        //IMPORTANT: THE DATA MUST BE SHUFFLED/SORTED FOR THIS FUNCTION TO COMPLETE CORRECTLY...
+        //Get key, if unique (not in Unique Key array) then start sending thse to the reducer until a new key pops up.
 
+        String currentKeyValue = "";
+        int currentReducerNumber = -1;
+
+        for (int i = 0; i < totalMappedEntites.size(); i++)
+        {
+            if (!currentKeyValue.equals(totalMappedEntites.get(i).getKey1())) { //TODO: Check this comparsion statement, rather confusing?
+                currentReducerNumber++;
+                mReducers.add(new Reducer("fromAirport", currentReducerNumber));
+                mReducers.get(currentReducerNumber).addKeyValuePair(totalMappedEntites.get(i));
+                currentKeyValue = totalMappedEntites.get(i).getKey1();
+            }
+            else
+                mReducers.get(currentReducerNumber).addKeyValuePair(totalMappedEntites.get(i));
+        }
     }
 
     private static void outputResults() {
-
+        //Call each reducer and output its result.
+        System.out.println();
     }
 
     private void testing_PauseProgram()
