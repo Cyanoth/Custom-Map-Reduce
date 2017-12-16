@@ -1,6 +1,8 @@
 /**
  * Created by Charlie on 09/11/2017.
  */
+
+//TODO: Validation & Logging Output
 public class PassengerEntry {
     private String passengerId;
     private String flightId;
