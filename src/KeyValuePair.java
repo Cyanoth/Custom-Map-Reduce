@@ -18,6 +18,10 @@ public class KeyValuePair implements Comparable<KeyValuePair> {
         return "[" + key1 + ", " + key2 + "]";
     }
 
+    public String asFormattedOutputString() {
+        return (key1 + ": " + key2);
+    }
+
     @Override
     public int compareTo(KeyValuePair com) {
         if (key1.equals(com.key1))

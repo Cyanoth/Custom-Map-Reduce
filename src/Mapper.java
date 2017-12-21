@@ -1,4 +1,5 @@
 import javax.swing.table.AbstractTableModel;
+import java.lang.reflect.Array;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -10,7 +11,7 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
     private final int mMapperID;
 
     //CONSIDER: Add 'mode' variable for simple mapper or combiner & mapper (first uses ArrayList, second uses HashMap)?
-    private ArrayList<PassengerEntry> mDataChunk; //TODO: this should be an array with MAX_DATAChunk?
+    private ArrayList<PassengerEntry> mDataChunk;
     private String compareKey; //TODO: Will Probably used for a later objective, so leaving in.
 
     public Mapper(String keyName, int mapperID)
@@ -22,8 +23,7 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
     }
 
     public int addPassengerEntry(PassengerEntry obj) {
-        //TODO: Systmatic Checking should take place in this function.
-        //TODO: Check this does not exceed MAX_ChunkSize
+        //TODO: Systmatic Checking should take place in this function. //TODO: Check this does not exceed MAX_ChunkSize?
         try {
             mDataChunk.add(obj);
             LOGGER.log(Level.FINE, "Added an entity to the mapper: " + mMapperID);
@@ -36,13 +36,13 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
 
     @Override
     public ArrayList<KeyValuePair> call() { //Returns mapped results
-        //TODO: Checker mapper has entities
+        //TODO: Checker mapper actually has entities to return.s
         LOGGER.log(Level.INFO, "A Mapper with the ID: " + mMapperID + " has started!");
         ArrayList<KeyValuePair> mappedEntries = new ArrayList<>();
 
         for (int i = 0; i < mDataChunk.size(); i++) {
-            KeyValuePair entry = new KeyValuePair(mDataChunk.get(i).getFromAirport(), 1); //TODO: change this into 'keyName'
-            mappedEntries.add(entry);
+            KeyValuePair pair = new KeyValuePair(mDataChunk.get(i).getFromAirport(), 1); //TODO: change this into 'keyName' //TODO: Change 1?
+            mappedEntries.add(pair);
         }
         LOGGER.log(Level.FINE, "Execution of mapper thread " + mMapperID + " has completed.");
         return mappedEntries;

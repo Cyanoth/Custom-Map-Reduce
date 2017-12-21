@@ -1,8 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.security.Key;
 import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,8 +19,8 @@ public class Objective1 {
     private Mapper[] mMappers;
     private ArrayList<Reducer> mReducers = new ArrayList<>();
 
-    //String - Output String.
-    private ArrayList<KeyValuePair> totalMappedEntites = new ArrayList<>();
+    private ArrayList<KeyValuePair> totalMappedEntities = new ArrayList<>();
+    private ArrayList<KeyValuePair> totalReducedEntities = new ArrayList<>();
 
     public int startObjective1() {
         LOGGER.log(Level.INFO, "Starting Objective 1");
@@ -31,12 +34,15 @@ public class Objective1 {
         testing_PauseProgram();
         executeMappers();
         testing_PauseProgram();
-
         shuffleSortMappedData();
         testing_PauseProgram();
-
         setupReducerObjects();
-        System.out.println("I'm here.");
+        testing_PauseProgram();
+        executeReducers();
+        testing_PauseProgram();
+        outputResults();
+
+        LOGGER.log(Level.INFO, "Program Completed!");
 
         return 0;
     }
@@ -91,47 +97,80 @@ public class Objective1 {
 
     private void executeMappers()
     {
-        LOGGER.log(Level.INFO, "Executing Mappers... Wait..."); //TODO: Limit to MAX_RUNNING_MAPPERS at anyone time.
+        //TODO: Need a way of returning an mapper error/stopping all theads.
+        LOGGER.log(Level.INFO, "Executing Mappers" + " (Max Simultaneous: " + Configuration.MAX_RUNNING_MAPPERS +  ") Please Wait...");
+        ThreadPoolExecutor mapperThreads = (ThreadPoolExecutor) Executors.newFixedThreadPool(Configuration.MAX_RUNNING_MAPPERS);
+
         for (Mapper singleMapper : mMappers) { //Execute Each Mapper
             try {
-                totalMappedEntites.addAll(singleMapper.call());
-            } catch (Exception e) {
+                Future<ArrayList<KeyValuePair>> mappedChunk = mapperThreads.submit(singleMapper);
+                totalMappedEntities.addAll(mappedChunk.get());
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        mapperThreads.shutdown();
+        LOGGER.log(Level.INFO, "All Mapper Thread Executions Completed!");
     }
 
     private void shuffleSortMappedData()
     {
         LOGGER.log(Level.INFO, "Shuffle & Sorting Mapped Data...");
-        Collections.sort(totalMappedEntites); //Sort & Shuffle the Mapped Entries //TODO: Add a time which tracks how long the sorting algorithm took.
+        Collections.sort(totalMappedEntities); //Sort & Shuffle the Mapped Entries //TODO: Add a time which tracks how long the sorting algorithm took.
         LOGGER.log(Level.INFO, "Shuffle Sort Completed!");
     }
 
     private void setupReducerObjects() //TODO: Pass in as parameter rather than global variable?
     {
         //IMPORTANT: THE DATA MUST BE SHUFFLED/SORTED FOR THIS FUNCTION TO COMPLETE CORRECTLY...
-        //Get key, if unique (not in Unique Key array) then start sending thse to the reducer until a new key pops up.
-
+        //Get key, if unique (not in Unique Key array) then start sending these to the reducer until a new key pops up.
         String currentKeyValue = "";
         int currentReducerNumber = -1;
 
-        for (int i = 0; i < totalMappedEntites.size(); i++)
+        for (int i = 0; i < totalMappedEntities.size(); i++)
         {
-            if (!currentKeyValue.equals(totalMappedEntites.get(i).getKey1())) { //TODO: Check this comparsion statement, rather confusing?
-                currentReducerNumber++;
-                mReducers.add(new Reducer("fromAirport", currentReducerNumber));
-                mReducers.get(currentReducerNumber).addKeyValuePair(totalMappedEntites.get(i));
-                currentKeyValue = totalMappedEntites.get(i).getKey1();
+            if (!currentKeyValue.equals(totalMappedEntities.get(i).getKey1())) { //If not the same as previous value, we need a new reducer object.
+                mReducers.add(new Reducer("fromAirport", ++currentReducerNumber)); //Create new reducer.
+                currentKeyValue = totalMappedEntities.get(i).getKey1(); //Set current-key value.
             }
-            else
-                mReducers.get(currentReducerNumber).addKeyValuePair(totalMappedEntites.get(i));
+
+            mReducers.get(currentReducerNumber).addKeyValuePair(totalMappedEntities.get(i));
         }
     }
 
-    private static void outputResults() {
-        //Call each reducer and output its result.
-        System.out.println();
+    //TODO: Move the execute functions into a seperate file, change them to have parameters.
+    private void executeReducers()
+    {
+        LOGGER.log(Level.INFO, "Executing Reducers" + " (Max Simultaneous: " + Configuration.MAX_RUNNING_REDUCERS +  ") Please Wait...");
+        ThreadPoolExecutor reducerThreads = (ThreadPoolExecutor) Executors.newFixedThreadPool(Configuration.MAX_RUNNING_REDUCERS);
+
+        for (Reducer singleReducer : mReducers) { //Execute Each Mapper
+            try {
+                Future<KeyValuePair> reducerResult = reducerThreads.submit(singleReducer);
+                totalReducedEntities.add(reducerResult.get());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        reducerThreads.shutdown();
+        LOGGER.log(Level.INFO, "All Reducer Thread Executions Completed!");
+
+    }
+    private void outputResults() {
+        System.out.println("----------------------------\nResults----------------------------");
+        int lineCount = 0;
+
+        for (KeyValuePair result: totalReducedEntities) {
+                System.out.print(result.asFormattedOutputString() + "  |  ");
+                if (lineCount++ == 5) {
+                    System.out.print("\n");
+                    lineCount = 0;
+                }
+        }
     }
 
     private void testing_PauseProgram()

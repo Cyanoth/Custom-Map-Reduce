@@ -8,14 +8,10 @@ import java.util.logging.Logger;
  */
 public class Reducer implements Callable<KeyValuePair> {
     private static final Logger LOGGER = Logger.getLogger(Reducer.class.getName());
-
     private ArrayList<KeyValuePair> mStoredKeysValuePairs;
     private final int mReducerID;
 
-
-
     public Reducer(String keyName, int reducerThreadID) { //TODO: is keyName really necessary for a reducer?!
-
         this.mReducerID = reducerThreadID;
         mStoredKeysValuePairs = new ArrayList<>();
         LOGGER.log(Level.FINE, "A Reducer with the ID: " + mReducerID + " has been initialized!");
