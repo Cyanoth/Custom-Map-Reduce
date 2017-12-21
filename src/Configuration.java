@@ -6,4 +6,7 @@ public class Configuration {
     public static final int MAX_RUNNING_REDUCERS = 5; //The amount of Reducers objects that can be running at anyone time.
 
 
+    public static String passengerDataFilePath = "/home/charlie/Documents/MapReduce-AdvComp/Data/AComp_Passenger_data_no_error.csv";
+
+
 }

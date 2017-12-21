@@ -1,7 +1,3 @@
-/**
- * Created by Charlie on 09/11/2017.
- */
-
 //TODO: Validation & Logging Output
 public class PassengerEntry {
     private String passengerId;
@@ -21,6 +17,8 @@ public class PassengerEntry {
         this.departureTime = Long.parseLong(departureTime); //validation check
         this.flightTime = Integer.parseInt(flightTime); // validation check
     }
+
+    //todo: function to get value by string key name.
 
     public String getPassengerId() {
         return passengerId;

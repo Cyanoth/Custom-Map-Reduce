@@ -3,15 +3,12 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by Charlie on 09/11/2017.
- */
 public class Reducer implements Callable<KeyValuePair> {
     private static final Logger LOGGER = Logger.getLogger(Reducer.class.getName());
     private ArrayList<KeyValuePair> mStoredKeysValuePairs;
     private final int mReducerID;
 
-    public Reducer(String keyName, int reducerThreadID) { //TODO: is keyName really necessary for a reducer?!
+    public Reducer(int reducerThreadID) {
         this.mReducerID = reducerThreadID;
         mStoredKeysValuePairs = new ArrayList<>();
         LOGGER.log(Level.FINE, "A Reducer with the ID: " + mReducerID + " has been initialized!");
@@ -30,6 +27,6 @@ public class Reducer implements Callable<KeyValuePair> {
 
     @Override
     public KeyValuePair call() throws Exception {
-        return new KeyValuePair(mStoredKeysValuePairs.get(0).getKey1(), mStoredKeysValuePairs.size());
+        return new KeyValuePair(mStoredKeysValuePairs.get(0).getKey1(), mStoredKeysValuePairs.size()); //TODO: cant do it by size, take the value then increment it...
     }
 }
