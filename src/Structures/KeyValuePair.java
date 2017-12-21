@@ -13,6 +13,7 @@ public class KeyValuePair implements Comparable<KeyValuePair> {
     {
         return key1;
     }
+    public int getKey2() { return key2; }
 
     public String asString() {
         return "[" + key1 + ", " + key2 + "]";

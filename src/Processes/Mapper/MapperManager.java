@@ -53,7 +53,7 @@ public class MapperManager {
     }
 
 
-    public ArrayList<KeyValuePair> shuffleSortMappedData(ArrayList<KeyValuePair> sortPairs)
+    private ArrayList<KeyValuePair> shuffleSortMappedData(ArrayList<KeyValuePair> sortPairs)
     {
         LOGGER.log(Level.INFO, "Shuffle & Sorting Mapped Data...");
         Collections.sort(sortPairs); //Sort & Shuffle the Mapped Entries //TODO: Add a time which tracks how long the sorting algorithm took.

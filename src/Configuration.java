@@ -7,6 +7,7 @@ public class Configuration {
 
 
     public static String passengerDataFilePath = "/home/charlie/Documents/MapReduce-AdvComp/Data/AComp_Passenger_data_no_error.csv";
+    public static String airportDataFilePath = "/home/charlie/Documents/MapReduce-AdvComp/Data/Top30_airports_LatLong.csv";
 
 
 }

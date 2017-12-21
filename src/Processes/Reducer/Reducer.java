@@ -14,19 +14,18 @@ public class Reducer implements Callable<KeyValuePair> {
         LOGGER.log(Level.FINE, "A Reducer with the ID: " + mReducerID + " has been initialized!");
     }
 
-    public int addKeyValuePair(KeyValuePair obj) {
-          try {
-             mStoredKeysValuePairs.add(obj);
-             LOGGER.log(Level.FINE, "Added an entity to the reducer: " + mReducerID);
-             return 0; //return success.
-        }
-        catch (Exception e) {
-            return -1;
-        }
+    public void addKeyValuePair(KeyValuePair obj) {
+        mStoredKeysValuePairs.add(obj);
+        LOGGER.log(Level.FINE, "Added an entity to the reducer: " + mReducerID);
     }
 
     @Override
     public KeyValuePair call() throws Exception {
-        return new KeyValuePair(mStoredKeysValuePairs.get(0).getKey1(), mStoredKeysValuePairs.size()); //TODO: cant do it by size, take the value then increment it...
+        String keyValue =  mStoredKeysValuePairs.get(0).getKey1();
+        int totalCount = 0;
+        for (KeyValuePair singlePair: mStoredKeysValuePairs)
+            totalCount += singlePair.getKey2();
+
+        return new KeyValuePair(keyValue, totalCount);
     }
 }
