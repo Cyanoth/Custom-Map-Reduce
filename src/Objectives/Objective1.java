@@ -23,7 +23,7 @@ public class Objective1 {
         mMapperManager = new MapperManager();
         mReducerManager = new ReducerManager();
 
-        mMapperManager.setupMappers("fromAirport", parsedPassengerDataFile);
+        mMapperManager.setupMappers(PassengerEntry.Keys.FromAirport, parsedPassengerDataFile);
         ArrayList<KeyValuePair> totalMappedEntities = mMapperManager.executeAllMapperThreads();
 
         mReducerManager.setupReducerObjects(totalMappedEntities);

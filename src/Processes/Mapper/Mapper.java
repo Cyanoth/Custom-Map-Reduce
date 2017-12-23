@@ -12,9 +12,9 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
 
     //CONSIDER: Add 'mode' variable for simple mapper or combiner & mapper (first uses ArrayList, second uses HashMap)?
     private ArrayList<PassengerEntry> mDataChunk;
-    private String compareKey; //TODO: Will Probably used for a later objective, so leaving in.
+    private PassengerEntry.Keys compareKey; //TODO: Will Probably used for a later objective, so leaving in.
 
-    public Mapper(String keyName, int mapperID)
+    public Mapper(PassengerEntry.Keys keyName, int mapperID)
     {
         this.mDataChunk = new ArrayList<>();
         this.compareKey = keyName;

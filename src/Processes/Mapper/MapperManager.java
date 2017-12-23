@@ -10,7 +10,7 @@ public class MapperManager {
     private static final Logger LOGGER = Logger.getLogger(MapperManager.class.getName());
     private Mapper[] mMappers;
 
-    public void setupMappers(String keyName, ArrayList<PassengerEntry> parsedPassengerFile) //todo: create custom exception
+    public void setupMappers(PassengerEntry.Keys keyName, ArrayList<PassengerEntry> parsedPassengerFile) //todo: create custom exception
     {
         int mappersToCreate = (int) Math.ceil(parsedPassengerFile.size() / Configuration.MAX_MAPPER_DATAENTRIES); //Create this many mapper objects.
         mMappers = new Mapper[mappersToCreate];

@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 public class PassengerEntry {
     private static final Logger LOGGER = Logger.getLogger(PassengerEntry.class.getName());
 
+    public enum Keys { PassengerID, FlightID, FromAirport, ToAirport, DepartureTime, FlightTime; }
+
     private String passengerId;
     private String flightId;
     private String fromAirport;
@@ -23,23 +25,23 @@ public class PassengerEntry {
         this.flightTime = Integer.parseInt(flightTime); // validation check
     }
 
-    public Object getValueByName(String keyName) //Return string, long or int depending on keyType
+    public Object getValueByName(Keys keyname) //Return string, long or int depending on keyType
     {
-        switch (keyName) {
-            case "passengerID":
+        switch (keyname) {
+            case PassengerID:
                 return passengerId;
-            case "flightID":
+            case FlightID:
                 return flightId;
-            case "fromAirport":
+            case FromAirport:
                 return fromAirport;
-            case "toAirport":
+            case ToAirport:
                 return toAirport;
-            case "departureTime":
+            case DepartureTime:
                 return departureTime;
-            case "flightTime":
+            case FlightTime:
                 return flightTime;
-            default:
-                LOGGER.log(Level.SEVERE, "Warning! Code requested an invalid keyname: " + keyName);
+            default://This should never be hit.
+                LOGGER.log(Level.SEVERE, "Warning! Code requested an invalid KeyName: " + keyname.toString());
                 return "INVALIDKEY";
         }
     }
