@@ -41,7 +41,7 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
         ArrayList<KeyValuePair> mappedEntries = new ArrayList<>();
 
         for (int i = 0; i < mDataChunk.size(); i++) {
-            KeyValuePair pair = new KeyValuePair(mDataChunk.get(i).getFromAirport(), 1); //TODO: change this into 'keyName' //TODO: Change 1?
+            KeyValuePair pair = new KeyValuePair((String) mDataChunk.get(i).getValueByName(compareKey), 1); //TODO: Change 1?
             mappedEntries.add(pair);
         }
         LOGGER.log(Level.FINE, "Execution of mapper thread " + mMapperID + " has completed.");

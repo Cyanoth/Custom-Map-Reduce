@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//Objective 1 TODO: Get top 30 airports, output ones which HAVENT been used.
 public class Objective1 {
     private static final Logger LOGGER = Logger.getLogger(Objective1.class.getName());
 

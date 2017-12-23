@@ -1,5 +1,10 @@
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 //TODO: Validation & Logging Output
 public class PassengerEntry {
+    private static final Logger LOGGER = Logger.getLogger(PassengerEntry.class.getName());
+
     private String passengerId;
     private String flightId;
     private String fromAirport;
@@ -18,30 +23,25 @@ public class PassengerEntry {
         this.flightTime = Integer.parseInt(flightTime); // validation check
     }
 
-    //todo: function to get value by string key name.
-
-    public String getPassengerId() {
-        return passengerId;
-    }
-
-    public String getFlightId() {
-        return flightId;
-    }
-
-    public String getFromAirport() {
-        return fromAirport;
-    }
-
-    public String getToAirport() {
-        return toAirport;
-    }
-
-    public long getDepartureTime() {
-        return departureTime;
-    }
-
-    public int getFlightTime() {
-        return flightTime;
+    public Object getValueByName(String keyName) //Return string, long or int depending on keyType
+    {
+        switch (keyName) {
+            case "passengerID":
+                return passengerId;
+            case "flightID":
+                return flightId;
+            case "fromAirport":
+                return fromAirport;
+            case "toAirport":
+                return toAirport;
+            case "departureTime":
+                return departureTime;
+            case "flightTime":
+                return flightTime;
+            default:
+                LOGGER.log(Level.SEVERE, "Warning! Code requested an invalid keyname: " + keyName);
+                return "INVALIDKEY";
+        }
     }
 
     public void handleParsingError()
