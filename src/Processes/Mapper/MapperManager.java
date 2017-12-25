@@ -10,28 +10,32 @@ public class MapperManager {
     private static final Logger LOGGER = Logger.getLogger(MapperManager.class.getName());
     private Mapper[] mMappers;
 
-    public void setupMappers(PassengerEntry.Keys keyName, ArrayList<PassengerEntry> parsedPassengerFile) //todo: create custom exception
+    public void createMappers(ArrayList<AbstractDetails> data, Keys mapKeyName, Keys mapKeyValue) //Set mapKeyValue to null to run mapper as a counter.
     {
-        int mappersToCreate = (int) Math.ceil(parsedPassengerFile.size() / Configuration.MAX_MAPPER_DATAENTRIES); //Create this many mapper objects.
+        int amountOfEntries = data.size();
+
+        int mappersToCreate = (int) Math.ceil(amountOfEntries / Configuration.MAX_MAPPER_DATAENTRIES); //Create this many mapper objects.
         mMappers = new Mapper[mappersToCreate];
         LOGGER.log(Level.INFO, "Allocated memory for: " + mappersToCreate + " mapper objects.");
 
         int tmp_MapperCounter = 0;
         int current_DataEntry = 0;
-        for (int i = 0; i < mappersToCreate; i++) { //For each mapper, initialise it & pass data to it.
-            mMappers[i] = new Mapper(keyName, tmp_MapperCounter);
+        for (int i = 0; i < mappersToCreate; i++) { //For each mapper, initialise it and pass some data to it.
+            if (mapKeyValue == null)
+                mMappers[i] = new Mapper(mapKeyName, tmp_MapperCounter);
+            else
+                mMappers[i] = new Mapper(mapKeyName, mapKeyValue, tmp_MapperCounter);
+
             tmp_MapperCounter++;
             for (int j = 0; j < Configuration.MAX_MAPPER_DATAENTRIES; j++)
             {
-                if (j > parsedPassengerFile.size()) //If reached end of file, break immediately.. Check this works?...
-                    break;
-                else
-                    mMappers[i].addPassengerEntry(parsedPassengerFile.get(current_DataEntry++)); //Add the entry to the mapper
+                if (j < amountOfEntries) // //TODO: This has recently changed, will need to check this part works... Ensures we don't read past the end of the file.
+                    mMappers[i].addEntry(data.get(current_DataEntry++)); //Add a single entry to the mapper
             }
         }
     }
 
-    public ArrayList<KeyValuePair> executeAllMapperThreads() //todo: create custom exception   //TODO: Need a way of returning an mapper error/stopping all theads.
+    public ArrayList<KeyValuePair> executeAllMapperThreads() //todo: create custom exception   //TODO: Need a way of returning an mapper error/stopping all threads.
     {
         LOGGER.log(Level.INFO, "Executing Mappers" + " (Max Simultaneous: " + Configuration.MAX_RUNNING_MAPPERS +  ") Please Wait...");
         ThreadPoolExecutor mapperThreads = (ThreadPoolExecutor) Executors.newFixedThreadPool(Configuration.MAX_RUNNING_MAPPERS);

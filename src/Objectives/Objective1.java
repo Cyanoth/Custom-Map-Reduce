@@ -1,34 +1,23 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.security.Key;
 import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Objective1 {
     private static final Logger LOGGER = Logger.getLogger(Objective1.class.getName());
 
-    private MapperManager mMapperManager;
-    private ReducerManager mReducerManager;
-
     public int startObjective1() {
         LOGGER.log(Level.INFO, "Starting Objective 1");
-        ArrayList<PassengerEntry> parsedPassengerDataFile = DataFileParser.parsePassengerFile(Configuration.passengerDataFilePath); //Any IO Errors, Handled are in the function.
-        ArrayList<AirportEntry> parsedAirportDataFile = DataFileParser.parseAirportFile(Configuration.airportDataFilePath); //Any IO Errors, Handled are in the function.
+        ParsedData parsedEntries = DataFileParser.parseAllFiles();
 
-        mMapperManager = new MapperManager();
-        mReducerManager = new ReducerManager();
+        MapperManager mMapperManager = new MapperManager();
+        ReducerManager mReducerManager = new ReducerManager();
 
-        mMapperManager.setupMappers(PassengerEntry.Keys.FromAirport, parsedPassengerDataFile);
+        mMapperManager.createMappers(new ArrayList<>(parsedEntries.getAllFlights()), Keys.FromAirport, null); //Just a counter.
         ArrayList<KeyValuePair> totalMappedEntities = mMapperManager.executeAllMapperThreads();
 
-        mReducerManager.setupReducerObjects(totalMappedEntities);
+        mReducerManager.createReducerObjects(totalMappedEntities, Reducer.Type.Count);
         ArrayList<KeyValuePair> reducedEntities = mReducerManager.executeAllReducerThreads();
-        String unusedAirports = getUnusedAirports(parsedAirportDataFile, reducedEntities);
+        String unusedAirports = getUnusedAirports(parsedEntries.getAllAirports(), reducedEntities);
         outputResults(reducedEntities, unusedAirports);
         return 0;
     }
@@ -46,22 +35,23 @@ public class Objective1 {
         System.out.println(unusedAirportResults);
     }
 
-    private String getUnusedAirports(ArrayList<AirportEntry> airportEntries, ArrayList<KeyValuePair> reducedEntries)
+    private String getUnusedAirports(ArrayList<AirportDetails> airportEntries, ArrayList<KeyValuePair> reducedEntries)
     {
         StringBuilder builder = new StringBuilder();
-        for (AirportEntry entry: airportEntries) { //Should try to optimise this.
+        for (AirportDetails entry: airportEntries) { //Should try to optimise this.
             boolean contained = false;
 
             for (KeyValuePair reducedEntry: reducedEntries)
-                if (entry.getAirportCode().equals(reducedEntry.getKey1())) {
+                if (entry.getValueByName(Keys.AirportCode).equals(reducedEntry.getMapKey())) {
                     contained = true;
                     break;
                 }
 
             if (!contained)
-                builder.append(entry.getAirportCode()).append(", ");
+                builder.append(entry.getValueByName(Keys.AirportCode)).append(", ");
         }
         builder.delete(builder.length() - 2, builder.length()); //Get rid of the last comma (TODO: should ensure there is something to delete)
         return builder.toString();
+
     }
 }

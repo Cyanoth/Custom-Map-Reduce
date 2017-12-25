@@ -4,12 +4,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Reducer implements Callable<KeyValuePair> {
+    public enum Type { Count, Concatenate}
+
     private static final Logger LOGGER = Logger.getLogger(Reducer.class.getName());
+
     private ArrayList<KeyValuePair> mStoredKeysValuePairs;
+    private Type mReducerType;
     private final int mReducerID;
 
-    public Reducer(int reducerThreadID) {
+    Reducer(Type reducerType, int reducerThreadID) {
         this.mReducerID = reducerThreadID;
+        this.mReducerType = reducerType;
         mStoredKeysValuePairs = new ArrayList<>();
         LOGGER.log(Level.FINE, "A Reducer with the ID: " + mReducerID + " has been initialized!");
     }
@@ -21,11 +26,25 @@ public class Reducer implements Callable<KeyValuePair> {
 
     @Override
     public KeyValuePair call() throws Exception {
-        String keyValue =  mStoredKeysValuePairs.get(0).getKey1();
-        int totalCount = 0;
-        for (KeyValuePair singlePair: mStoredKeysValuePairs)
-            totalCount += singlePair.getKey2();
+        String keyValue = (String) mStoredKeysValuePairs.get(0).getMapKey();
+        StringBuilder valueResult = new StringBuilder();
 
-        return new KeyValuePair(keyValue, totalCount);
+        int totalCount = 0;
+        int lineCount = 0;
+
+        for (KeyValuePair singlePair : mStoredKeysValuePairs) {
+            if (mReducerType == Type.Count)
+                totalCount += (int) singlePair.getMapValue();
+            else if (mReducerType == Type.Concatenate) {  //TODO: Ensure that each is passengerEntry is unique for a flight (this simply adds one for now)
+                valueResult.append(singlePair.getMapValue()).append(" ");
+            }
+        }
+
+        if (mReducerType == Type.Count)
+            return new KeyValuePair(keyValue, totalCount);
+        else if (mReducerType == Type.Concatenate)
+            return new KeyValuePair(keyValue, valueResult.toString());
+        else
+            return new KeyValuePair("ERROR", "ERROR");
     }
 }

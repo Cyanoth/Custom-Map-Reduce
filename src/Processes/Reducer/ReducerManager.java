@@ -9,19 +9,16 @@ class ReducerManager {
     private static final Logger LOGGER = Logger.getLogger(MapperManager.class.getName());
     private ArrayList<Reducer> mReducers = new ArrayList<>();
 
-    public void setupReducerObjects(ArrayList<KeyValuePair> sortedMappedEntities)
+    public void createReducerObjects(ArrayList<KeyValuePair> sortedMappedEntities, Reducer.Type reducerType) //IMPORTANT: THE DATA MUST BE SHUFFLED/SORTED FOR THIS FUNCTION TO COMPLETE CORRECTLY...
     {
-        //IMPORTANT: THE DATA MUST BE SHUFFLED/SORTED FOR THIS FUNCTION TO COMPLETE CORRECTLY...
-        //Get key, if unique (not in Unique Key array) then start sending these to the reducer until a new key pops up.
         String currentKeyValue = "";
         int currentReducerNumber = -1;
 
-        for (KeyValuePair sortedMappedEntity : sortedMappedEntities) {
-            if (!currentKeyValue.equals(sortedMappedEntity.getKey1())) { //If not the same as previous value, we need a new reducer object.
-                mReducers.add(new Reducer(++currentReducerNumber)); //Create new reducer.
-                currentKeyValue = sortedMappedEntity.getKey1(); //Set current-key value.
+        for (KeyValuePair sortedMappedEntity : sortedMappedEntities) {         //Get key, if unique (not in Unique Key array) then start sending these to the reducer until a new key pops up.
+            if (!currentKeyValue.equals(sortedMappedEntity.getMapKey())) { //If not the same as previous value, we need a new reducer object.
+                mReducers.add(new Reducer(reducerType, ++currentReducerNumber)); //Create new reducer.
+                currentKeyValue = (String) sortedMappedEntity.getMapKey(); //Set current-key value.
             }
-
             mReducers.get(currentReducerNumber).addKeyValuePair(sortedMappedEntity);
         }
     }

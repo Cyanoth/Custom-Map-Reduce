@@ -1,33 +1,31 @@
 public class KeyValuePair implements Comparable<KeyValuePair> {
-    private String key1;
-    private int key2;
+    private Object mapKey; //These are 'objects' because they can be anything (string/int/double)
+    private Object mapValue;
 
-    public KeyValuePair(String key1, int key2)
+
+    public KeyValuePair(Object mapKey, Object mapValue)
     {
-        this.key1 = key1;
-        this.key2 = key2;
-
+        this.mapKey = mapKey;
+        this.mapValue = mapValue;
     }
 
-    public String getKey1()
-    {
-        return key1;
-    }
-    public int getKey2() { return key2; }
-
-    public String asString() {
-        return "[" + key1 + ", " + key2 + "]";
+    public Object getMapKey() {
+        return mapKey;
     }
 
-    public String asFormattedOutputString() {
-        return (key1 + ": " + key2);
+    public Object getMapValue() {
+        return mapValue;
+    }
+
+     public String asFormattedOutputString() {
+        return (mapKey + ": " + mapValue);
     }
 
     @Override
     public int compareTo(KeyValuePair com) {
-        if (key1.equals(com.key1))
+        if (mapKey.equals(com.mapKey.toString()))
             return 0;
-        else if (key1.compareToIgnoreCase(com.key1) > 0)
+        else if (mapKey.toString().compareToIgnoreCase(com.mapKey.toString()) > 0)
             return 1;
         else
             return -1;
