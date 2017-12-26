@@ -18,8 +18,8 @@ public class    MainApplication
 
 //        Objective1 testObjective1 = new Objective1();
 //        testObjective1.startObjective1();
-        Objective2 testObjective2 = new Objective2(); //does this need parameters? //TODO: Add 'Select data file paths', validate they are correctly formatted.
-        testObjective2.startObjective2();
+        Objective2And3 testObjective2 = new Objective2And3(); //does this need parameters? //TODO: Add 'Select data file paths', validate they are correctly formatted.
+        testObjective2.startObjective2_3();
         TestFunctions.testing_PauseProgram();
 
 

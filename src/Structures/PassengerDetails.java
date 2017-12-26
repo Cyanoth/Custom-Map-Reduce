@@ -27,10 +27,4 @@ public class PassengerDetails extends AbstractDetails {
                 return "INVALIDKEY";
         }
     }
-
-    public void handleParsingError()
-    {
-        System.out.println("Parsing Error! ");
-    }
-
 }

@@ -35,12 +35,6 @@ public class AirportDetails extends AbstractDetails {
     }
 
     public String getFormattedairportNameCode() {
-        return airportCode + " ( " + airportName + " )";
+        return airportCode + " (" + airportName + ")";
     }
-
-    public void handleParsingError() //TODO: declare this in the abstract class.
-    {
-        System.out.println("Parsing Error! ");
-    }
-
 }

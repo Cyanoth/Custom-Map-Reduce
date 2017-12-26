@@ -1,3 +1,7 @@
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,19 +45,26 @@ public class FlightDetails extends AbstractDetails {
     }
 
     public String getFormattedDepartureTime() {
-        return "00:22:11";
+        ZonedDateTime formatDepartureTime = Instant.ofEpochMilli(departureTime * 1000).atZone(ZoneId.of("GMT"));
+        return formatDepartureTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + " (GMT)"; //Convert EPOCH time to GMT
     }
 
     public String getFormattedFlightTime() {
-        return "10 Minutes";
+        int hours = flightTime / 60;
+        int minutes = flightTime % 60;
+        String appendMinutesHours = "";
+        String appendMinutesZero = "";
+        if (hours < 10)
+            appendMinutesHours = "0";
+        if (minutes < 10)
+            appendMinutesZero = "0";
+
+        return appendMinutesHours + hours + ":" + appendMinutesZero + minutes;
     }
 
     public String calculateArrivalTime() {
-        return "22:33:44";
-    }
-
-    public void handleParsingError()
-    {
-        System.out.println("Parsing Error! ");
+        ZonedDateTime calcArrivalTime = Instant.ofEpochMilli(departureTime * 1000).atZone(ZoneId.of("GMT"));
+        calcArrivalTime = calcArrivalTime.plusMinutes(flightTime);
+        return calcArrivalTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) + " (GMT)";
     }
 }
