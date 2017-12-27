@@ -9,6 +9,10 @@ public class Objective1 {
         LOGGER.log(Level.INFO, "Starting Objective 1");
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
 
+
+        if (ErrorManager.hasFatalErrorOccurred()) //Fatal Parsing Occurred Error, Cannot Continue Map/Reduce Functions.
+            return -1;
+
         MapperManager mMapperManager = new MapperManager();
         ReducerManager mReducerManager = new ReducerManager();
 

@@ -3,7 +3,7 @@ public class KeyValuePair implements Comparable<KeyValuePair> {
     private Object mapValue;
 
 
-    public KeyValuePair(Object mapKey, Object mapValue)
+    KeyValuePair(Object mapKey, Object mapValue)
     {
         this.mapKey = mapKey;
         this.mapValue = mapValue;

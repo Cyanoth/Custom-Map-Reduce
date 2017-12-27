@@ -9,82 +9,86 @@ public class DataFileParser {
     private static final Logger LOGGER = Logger.getLogger(DataFileParser.class.getName());
 
     public static ParsedData parseAllFiles() {
-        ParsedData allParsed = new ParsedData();
-        allParsed = parsePassengerFile();
+        ParsedData allParsed = parsePassengerFile();
         allParsed.setAllAirports(parseAirportFile());
-
         return allParsed;
     }
 
     private static ParsedData parsePassengerFile() {
-        LOGGER.log(Level.FINE, "Parsing Passenger Data File: " + Configuration.passengerDataFilePath);
+        LOGGER.log(Level.INFO, "Parsing Passenger Data File: " + Configuration.passengerDataFilePath);
         ParsedData parsedPassengersFlights = new ParsedData();
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(Configuration.passengerDataFilePath));
             String currentLine;
+            int currentLineNumber = 0;
 
             while ((currentLine = csvReader.readLine()) != null) {
                 String[] sl = currentLine.split(",");
                 if (sl.length < 6)
-                    System.out.println("Invalid amount of arguments on line number: UNKNOWN"); //TODO: Handle This Correctly.
+                    ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
-                    parsedPassengersFlights.addPassenger(new PassengerDetails(sl[0], sl[1]));
-                    parsedPassengersFlights.addFlight(new FlightDetails(sl[1], sl[2], sl[3], sl[4], sl[5]));
+                    PassengerDetails parsedLinePassenger = new PassengerDetails(sl[0], sl[1]);
+                    if (parsedLinePassenger.isValid()) {
+                        FlightDetails parsedFlightDetails = new FlightDetails(sl[1], sl[2], sl[3], sl[4], sl[5]);
+                        if (parsedFlightDetails.isValid()) {
+                            parsedPassengersFlights.addPassenger(parsedLinePassenger); //TODO: Pass line number for error manager?
+                            parsedPassengersFlights.addFlight(parsedFlightDetails); //TODO: Pass line number for error manager?
+                        }
+                    }
                 }
+                currentLineNumber++;
             }
+            LOGGER.log(Level.INFO, "Parsed Passenger Data File Successfully!");
         }
         catch (IOException e)
         {
-            LOGGER.log(Level.SEVERE, "Error has occurred with the passenger data file");//TODO: Handle this efficently.
+            ErrorManager.generateError("An I/O error occurred when parsing the passenger datafile! Please see log for error.", ErrorType.Fatal, ErrorKind.Other);
             e.printStackTrace();
         }
 
-        LOGGER.log(Level.FINE, "Parsed Passenger Data File Successfully!");
         return parsedPassengersFlights;
     }
 
-    public static ArrayList<AirportDetails> parseAirportFile() {
-        LOGGER.log(Level.FINE, "Parsing Top Airport Data File: " + Configuration.airportDataFilePath);
+    private static ArrayList<AirportDetails> parseAirportFile() {
+        LOGGER.log(Level.INFO, "Parsing Top Airport Data File: " + Configuration.airportDataFilePath);
         ArrayList<AirportDetails> airportEntries = new ArrayList<>();
 
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(Configuration.airportDataFilePath));
             String currentLine;
+            int currentLineNumber = 0;
 
             while ((currentLine = csvReader.readLine()) != null) {
                 String[] sl = currentLine.split(",");
                 if (sl.length < 4)
-                    System.out.println("Invalid amount of arguments on line number: UNKNOWN"); //TODO: Handle This Correctly.
+                    ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
-                    AirportDetails airport = new AirportDetails(sl[0], sl[1], Double.parseDouble(sl[2]), Double.parseDouble(sl[3]));
+                    AirportDetails airport = new AirportDetails(sl[0], sl[1], sl[2], sl[3]); //TODO: Pass line number for error manager?
                     boolean airportAlreadyExists = false;
 
                     for (AirportDetails existingAirport: airportEntries) {
                         if (existingAirport.getValueByName(Keys.AirportCode) == airport.getValueByName(Keys.AirportCode)) {
                             airportAlreadyExists = true;
-                            LOGGER.log(Level.FINE, "Airport with the Code:" + existingAirport.getValueByName(Keys.AirportCode) + " already exists, so wasn't added!");
+                            ErrorManager.generateError("The AirportCode: " + airport.getValueByName(Keys.AirportCode) + " has occurred more than once in the Top30 " +
+                                                        "DataFile, please verify this.", ErrorType.Warning, ErrorKind.Parsing);
                             break;
-                            //TODO: Validation will go here, check that the new airport matches the existing airport details. If it doesn't there is a conflict of data and will need to throw an error.
                         }
                     }
 
-                    if (!airportAlreadyExists) {
+                    if (!airportAlreadyExists && airport.isValid()) {
                         airportEntries.add(airport);
-                        LOGGER.log(Level.FINE, "Added a airport entry (" + airportEntries.size() + ")" + " AirportCode: " + airport.getValueByName(Keys.AirportCode) +
-                                " AirportName: " + airport.getValueByName(Keys.AirportName) + " Lat: " + airport.getValueByName(Keys.Latitude) +
-                                " Longitude: " + airport.getValueByName(Keys.Longitude));
                     }
                 }
-
+                currentLineNumber++;
             }
+            LOGGER.log(Level.INFO, "Parsed Airport Data File Successfully!");
         }
         catch (IOException e)
         {
-            LOGGER.log(Level.SEVERE, "Error has occurred with the Airport data file");//TODO: Handle this efficently.
+            ErrorManager.generateError("An I/O error occurred when parsing the Top30 Airport datafile! Please see log for error.", ErrorType.Fatal, ErrorKind.Other);
             e.printStackTrace();
         }
 
-        LOGGER.log(Level.FINE, "Parsed Airport Data File Successfully!");
         return airportEntries;
     }
 }
