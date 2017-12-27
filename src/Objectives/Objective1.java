@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 public class Objective1 {
     private static final Logger LOGGER = Logger.getLogger(Objective1.class.getName());
 
-    public int startObjective1() {
+    public static int startObjective1() {
         LOGGER.log(Level.INFO, "Starting Objective 1");
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
 
@@ -22,8 +22,8 @@ public class Objective1 {
         return 0;
     }
 
-    private void outputResults(ArrayList<KeyValuePair> results, String unusedAirportResults) {
-        System.out.println("\n----------------------------\n\t\tResults\n----------------------------");
+    private static void outputResults(ArrayList<KeyValuePair> results, String unusedAirportResults) {
+        System.out.println("\n----------------------------\n\t\tResults: Total Airports\n----------------------------");
         int lineCount = 0;
         for (KeyValuePair result: results) {
                 System.out.print(result.asFormattedOutputString() + "  |  ");
@@ -35,7 +35,7 @@ public class Objective1 {
         System.out.println(unusedAirportResults);
     }
 
-    private String getUnusedAirports(ArrayList<AirportDetails> airportEntries, ArrayList<KeyValuePair> reducedEntries)
+    private static String getUnusedAirports(ArrayList<AirportDetails> airportEntries, ArrayList<KeyValuePair> reducedEntries)
     {
         StringBuilder builder = new StringBuilder();
         for (AirportDetails entry: airportEntries) { //Should try to optimise this.

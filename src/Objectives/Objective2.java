@@ -2,44 +2,30 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Objective2And3 {
-    private static final Logger LOGGER = Logger.getLogger(Objective2And3.class.getName());
+public class Objective2 {
+    private static final Logger LOGGER = Logger.getLogger(Objective2.class.getName());
 
-    private MapperManager mMapperManager;
-    private ReducerManager mReducerManager;
-
-    public int startObjective2_3() {
+    public static int startObjective2() {
         LOGGER.log(Level.INFO, "Starting Objective 2");
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
-        mMapperManager = new MapperManager();
-        mReducerManager = new ReducerManager();
+        MapperManager mMapperManager = new MapperManager();
+        ReducerManager mReducerManager = new ReducerManager();
 
         mMapperManager.createMappers(new ArrayList<>(parsedEntries.getAllPassengers()), Keys.FlightID, Keys.PassengerID);
         ArrayList<KeyValuePair> mappedPassengerOnFlights = mMapperManager.executeAllMapperThreads();
 
         mReducerManager.createReducerObjects(mappedPassengerOnFlights, Reducer.Type.Concatenate);
         ArrayList<KeyValuePair> reducedPassengerList = mReducerManager.executeAllReducerThreads();
-        ArrayList<KeyValuePair> totalPassengerCount = doObjective3(parsedEntries);
+        ArrayList<KeyValuePair> totalPassengerCount = Objective3.startObjective3(parsedEntries, true);
 
         outputResults(parsedEntries, reducedPassengerList, totalPassengerCount);
 
         return 0;
     }
 
-    private ArrayList<KeyValuePair> doObjective3(ParsedData data) {
-        mMapperManager = new MapperManager();
-        mReducerManager = new ReducerManager();
 
-        LOGGER.log(Level.INFO, "Rerunning Mappers & Reducers to get a total passenger count (objective 3)");
-        mMapperManager.createMappers(new ArrayList<>(data.getAllPassengers()), Keys.FlightID, null);
-        ArrayList<KeyValuePair> mappedPassengerCount = mMapperManager.executeAllMapperThreads();
 
-        mReducerManager = new ReducerManager();
-        mReducerManager.createReducerObjects(mappedPassengerCount, Reducer.Type.Count);
-        return mReducerManager.executeAllReducerThreads();
-    }
-
-    private void outputResults(ParsedData data, ArrayList<KeyValuePair> flights, ArrayList<KeyValuePair> passengerCount) {
+    private static void outputResults(ParsedData data, ArrayList<KeyValuePair> flights, ArrayList<KeyValuePair> passengerCount) {
         System.out.println("\n----------------------------\n\t\tResults\n----------------------------");
         for (int i = 0; i < flights.size(); i++ ) {
             KeyValuePair reducedPassengerEntries = flights.get(i);
@@ -67,7 +53,7 @@ public class Objective2And3 {
         }
     }
 
-    private String formatPassengerID(String passengerValueList) {
+    private static String formatPassengerID(String passengerValueList) {
         final int splitNOccurrence = 10;
         String[] splitString = passengerValueList.split("\\s");
         StringBuilder formattedString = new StringBuilder();

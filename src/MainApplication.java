@@ -13,13 +13,8 @@ public class    MainApplication
     //TODO: Change hardcoded paths into command line arguments and test if they exist/not null
     public static void main(String[] args){
         LOGGER.log(Level.INFO, "Application Started");
+        Objective2.startObjective2();
 
-
-
-//        Objective1 testObjective1 = new Objective1();
-//        testObjective1.startObjective1();
-        Objective2And3 testObjective2 = new Objective2And3(); //does this need parameters? //TODO: Add 'Select data file paths', validate they are correctly formatted.
-        testObjective2.startObjective2_3();
         TestFunctions.testing_PauseProgram();
 
 
