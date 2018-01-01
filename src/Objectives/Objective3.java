@@ -12,13 +12,11 @@ public class Objective3 {
             data = DataFileParser.parseAllFiles();
 
         MapperManager mMapperManager = new MapperManager();
-        ReducerManager mReducerManager = new ReducerManager();
-
 
         mMapperManager.createMappers(new ArrayList<>(data.getAllPassengers()), Keys.FlightID, null);
         ArrayList<KeyValuePair> mappedPassengerCount = mMapperManager.executeAllMapperThreads();
 
-        mReducerManager = new ReducerManager();
+        ReducerManager mReducerManager = new ReducerManager();
         mReducerManager.createReducerObjects(mappedPassengerCount, Reducer.Type.Count);
         ArrayList<KeyValuePair> reducedPassengerCount = mReducerManager.executeAllReducerThreads();
 

@@ -27,7 +27,7 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
     }
 
     public int addEntry(AbstractDetails obj) {
-        //TODO: Systmatic Checking should take place in this function. //TODO: Check this does not exceed MAX_ChunkSize?
+        //TODO: Systmatic Checking should take place in this function.
         try {
             mDataChunk.add(obj);
             LOGGER.log(Level.FINE, "Added an entity to the mapper: " + mMapperID);
@@ -40,7 +40,7 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
 
     @Override
     public ArrayList<KeyValuePair> call() { //Returns mapped results
-        //TODO: Checker mapper actually has entities to return.s
+        //TODO: Checker mapper actually has entities to return.
         LOGGER.log(Level.INFO, "A Mapper with the ID: " + mMapperID + " has started!");
         ArrayList<KeyValuePair> mappedEntries = new ArrayList<>();
 

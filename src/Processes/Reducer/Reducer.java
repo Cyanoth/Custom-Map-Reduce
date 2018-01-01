@@ -25,12 +25,11 @@ public class Reducer implements Callable<KeyValuePair> {
     }
 
     @Override
-    public KeyValuePair call() throws Exception {
+    public KeyValuePair call() {
         String keyValue = (String) mStoredKeysValuePairs.get(0).getMapKey();
         StringBuilder valueResult = new StringBuilder();
 
         int totalCount = 0;
-        int lineCount = 0;
 
         for (KeyValuePair singlePair : mStoredKeysValuePairs) {
             if (mReducerType == Type.Count)

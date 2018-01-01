@@ -20,7 +20,7 @@ public class DataFileParser {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(Configuration.passengerDataFilePath));
             String currentLine;
-            int currentLineNumber = 0;
+            int currentLineNumber = 1;
 
             while ((currentLine = csvReader.readLine()) != null) {
                 String[] sl = currentLine.split(",");
@@ -31,10 +31,14 @@ public class DataFileParser {
                     if (parsedLinePassenger.isValid()) {
                         FlightDetails parsedFlightDetails = new FlightDetails(sl[1], sl[2], sl[3], sl[4], sl[5]);
                         if (parsedFlightDetails.isValid()) {
-                            parsedPassengersFlights.addPassenger(parsedLinePassenger); //TODO: Pass line number for error manager?
-                            parsedPassengersFlights.addFlight(parsedFlightDetails); //TODO: Pass line number for error manager?
+                            parsedPassengersFlights.addPassenger(parsedLinePassenger);
+                            parsedPassengersFlights.addFlight(parsedFlightDetails);
                         }
+                        else
+                            LOGGER.log(Level.FINE, "The above error occurred on line number: " + currentLineNumber);
                     }
+                    else
+                        LOGGER.log(Level.FINE, "The above error occurred on line number: " + currentLineNumber);
                 }
                 currentLineNumber++;
             }
@@ -63,7 +67,7 @@ public class DataFileParser {
                 if (sl.length < 4)
                     ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
-                    AirportDetails airport = new AirportDetails(sl[0], sl[1], sl[2], sl[3]); //TODO: Pass line number for error manager?
+                    AirportDetails airport = new AirportDetails(sl[0], sl[1], sl[2], sl[3]);
                     boolean airportAlreadyExists = false;
 
                     for (AirportDetails existingAirport: airportEntries) {
