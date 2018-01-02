@@ -5,21 +5,31 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 public class FlightDetails extends AbstractDetails {
-
     private final String flightID;
     private final String fromAirport;
     private final String toAirport;
     private final long departureTime;
     private final int flightTime;
 
-    FlightDetails(String flightID, String fromAirport, String toAirport, String departureTime, String flightTime)
+    FlightDetails(String flightID, String fromAirport, String toAirport, String departureTime, String flightTime, ParsedData curData, int fromLineNumber)
     {
+        super.fromLineNumber = fromLineNumber;
         this.flightID = flightID;
         this.fromAirport = fromAirport;
         this.toAirport = toAirport;
         this.departureTime = parseValidateDepartureTime(departureTime);
-        this.flightTime = parseValidateFlightTime(flightTime);
-        performPatternValidation();
+
+        if (isValid())
+            this.flightTime = parseValidateFlightTime(flightTime);
+        else
+            this.flightTime = -1;
+
+        if (isValid())
+            performPatternValidation();
+
+        if (curData != null && isValid())
+            performCheckAirportExists(curData);
+
     }
 
     @Override
@@ -28,13 +38,22 @@ public class FlightDetails extends AbstractDetails {
         Pattern pattern_airportCode = Pattern.compile("[A-Z]{3}"); //Pattern XXX
 
         if (!pattern_flightID.matcher(this.flightID).matches())
-            super.handleError("FlightID: '" + this.flightID + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " FlightID: '" + this.flightID + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
 
-        else if (!pattern_airportCode.matcher(this.fromAirport).matches())  //TODO: Check it exists in the Top30 Airport?
-            super.handleError("FromAirport Code: '" + this.fromAirport + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+        else if (!pattern_airportCode.matcher(this.fromAirport).matches())
+            super.handleError("Line: " + fromLineNumber + " FromAirport Code: '" + this.fromAirport + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
 
-        else if (!pattern_airportCode.matcher(this.toAirport).matches())  //TODO: Check it exists in the Top30 Airport?
-            super.handleError("ToAirport Code: '" + this.toAirport + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+        else if (!pattern_airportCode.matcher(this.toAirport).matches())
+            super.handleError("Line: " + fromLineNumber + " ToAirport Code: '" + this.toAirport + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+
+    }
+
+    private void performCheckAirportExists(ParsedData curData) {
+        if (curData.getAirportDetailsByCode(fromAirport) == null)
+            super.handleError("Line: " + fromLineNumber + " FromAirport Code: '" + this.fromAirport + "' is invalid! (It does not exist in the Top30 File!)", ErrorType.Warning);
+
+        else if (curData.getAirportDetailsByCode(toAirport) == null)
+            super.handleError("Line: " + fromLineNumber + " ToAirport Code: '" + this.toAirport + "' is invalid! (It does not exist in the Top30 File!)", ErrorType.Warning);
 
     }
 
@@ -43,14 +62,14 @@ public class FlightDetails extends AbstractDetails {
             Long result = Long.parseLong(depatureTime);
 
             if (result < 999999999 || result > 9999999999L) {
-                super.handleError("Departure Time: '" + result + "' is invalid! (It is out of range!)", ErrorType.Warning);
+                super.handleError("Line: " + fromLineNumber + " Departure Time: '" + result + "' is invalid! (It is out of range!)", ErrorType.Warning);
                 return -1;
             }
             else
                 return result;
         }
         catch (NumberFormatException e) {
-            super.handleError("Departure Time: '" + depatureTime + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " Departure Time: '" + depatureTime + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
             return -1;
         }
     }
@@ -60,14 +79,14 @@ public class FlightDetails extends AbstractDetails {
             int result = Integer.parseInt(flightTime);
 
             if (result < 0 || result > 9999) {
-                super.handleError("Flight Time: " + result + "' is invalid! (It is out of range!)", ErrorType.Warning);
+                super.handleError("Line: " + fromLineNumber + " Flight Time: " + result + "' is invalid! (It is out of range!)", ErrorType.Warning);
                 return -1;
             }
             else
                 return result;
         }
         catch (NumberFormatException e) {
-            super.handleError("Flight Time: '" + flightTime + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " Flight Time: '" + flightTime + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
             return -1;
         }
     }

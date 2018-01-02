@@ -11,6 +11,8 @@ public class Objective3 {
         if (data == null) //Makes objective 3 standalone, if not called from objective2 then get its own records.
             data = DataFileParser.parseAllFiles();
 
+        if (ErrorManager.hasFatalErrorOccurred()) { return null; }//Fatal Error Occurred, Cannot Continue.
+
         MapperManager mMapperManager = new MapperManager();
 
         mMapperManager.createMappers(new ArrayList<>(data.getAllPassengers()), Keys.FlightID, null);

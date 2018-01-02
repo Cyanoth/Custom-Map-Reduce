@@ -9,14 +9,20 @@ public class DataFileParser {
     private static final Logger LOGGER = Logger.getLogger(DataFileParser.class.getName());
 
     public static ParsedData parseAllFiles() {
-        ParsedData allParsed = parsePassengerFile();
+        ParsedData allParsed = new ParsedData();
         allParsed.setAllAirports(parseAirportFile());
+        if (ErrorManager.hasFatalErrorOccurred()) { return null; }//Fatal Error Occurred, Cannot Continue.
+
+        allParsed = parsePassengerFile(allParsed);
         return allParsed;
     }
 
-    private static ParsedData parsePassengerFile() {
+    private static ParsedData parsePassengerFile(ParsedData currentData) {
         LOGGER.log(Level.INFO, "Parsing Passenger Data File: " + Configuration.passengerDataFilePath);
-        ParsedData parsedPassengersFlights = new ParsedData();
+        ParsedData parsedPassengersAndFlights = currentData;
+        if (currentData == null)
+            parsedPassengersAndFlights= new ParsedData();
+
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(Configuration.passengerDataFilePath));
             String currentLine;
@@ -27,20 +33,19 @@ public class DataFileParser {
                 if (sl.length < 6)
                     ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
-                    PassengerDetails parsedLinePassenger = new PassengerDetails(sl[0], sl[1]);
-                    if (parsedLinePassenger.isValid()) {
-                        FlightDetails parsedFlightDetails = new FlightDetails(sl[1], sl[2], sl[3], sl[4], sl[5]);
-                        if (parsedFlightDetails.isValid()) {
-                            parsedPassengersFlights.addPassenger(parsedLinePassenger);
-                            parsedPassengersFlights.addFlight(parsedFlightDetails);
+                    FlightDetails parsedLineFlight = new FlightDetails(sl[1], sl[2], sl[3], sl[4], sl[5], currentData, currentLineNumber); //Get the flight details from the line.
+
+                    if (parsedLineFlight.isValid()) {
+                        PassengerDetails parsedLinePassenger = new PassengerDetails(sl[0], sl[1], currentLineNumber);
+
+                        if (parsedLinePassenger.isValid()) {
+                            parsedPassengersAndFlights.addPassenger(parsedLinePassenger);
+                            parsedPassengersAndFlights.addFlight(parsedLineFlight);
+                            parsedLinePassenger.linkFlightDetails(parsedPassengersAndFlights.getFlightDetailsByID(sl[1]));
                         }
-                        else
-                            LOGGER.log(Level.FINE, "The above error occurred on line number: " + currentLineNumber);
                     }
-                    else
-                        LOGGER.log(Level.FINE, "The above error occurred on line number: " + currentLineNumber);
+                    currentLineNumber++;
                 }
-                currentLineNumber++;
             }
             LOGGER.log(Level.INFO, "Parsed Passenger Data File Successfully!");
         }
@@ -50,7 +55,7 @@ public class DataFileParser {
             e.printStackTrace();
         }
 
-        return parsedPassengersFlights;
+        return parsedPassengersAndFlights;
     }
 
     private static ArrayList<AirportDetails> parseAirportFile() {
@@ -67,7 +72,7 @@ public class DataFileParser {
                 if (sl.length < 4)
                     ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
-                    AirportDetails airport = new AirportDetails(sl[0], sl[1], sl[2], sl[3]);
+                    AirportDetails airport = new AirportDetails(sl[0], sl[1], sl[2], sl[3], currentLineNumber);
                     boolean airportAlreadyExists = false;
 
                     for (AirportDetails existingAirport: airportEntries) {

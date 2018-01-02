@@ -29,13 +29,15 @@ public class MapperManager {
             tmp_MapperCounter++;
             for (int j = 0; j < Configuration.MAX_MAPPER_DATAENTRIES; j++)
             {
-                if (j < amountOfEntries) // //TODO: This has recently changed, will need to check this part works... Ensures we don't read past the end of the file.
-                    mMappers[i].addEntry(data.get(current_DataEntry++)); //Add a single entry to the mapper
+                if (current_DataEntry < amountOfEntries)
+                    mMappers[i].addEntry(data.get(current_DataEntry)); //Add a single entry to the mapper
+
+                current_DataEntry++;
             }
         }
     }
 
-    public ArrayList<KeyValuePair> executeAllMapperThreads() //todo: create custom exception   //TODO: Need a way of returning an mapper error/stopping all threads.
+    public ArrayList<KeyValuePair> executeAllMapperThreads()
     {
         LOGGER.log(Level.INFO, "Executing Mappers" + " (Max Simultaneous: " + Configuration.MAX_RUNNING_MAPPERS +  ") Please Wait...");
         ThreadPoolExecutor mapperThreads = (ThreadPoolExecutor) Executors.newFixedThreadPool(Configuration.MAX_RUNNING_MAPPERS);

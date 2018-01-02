@@ -10,9 +10,9 @@ public class MainApplication
     //TODO: Change ask user to select data file?
     public static void main(String[] args){
         LOGGER.log(Level.INFO, "Application Started");
-        Objective1.startObjective1();
-        Objective2.startObjective2();
-        //Objective3.startObjective3(null, true); //Uncomment to run Objective3 as standalone (it is called in Objective 2 to add to information list)
+        //Objective1.startObjective1();
+        //Objective2.startObjective2();
+        Objective3.startObjective3(null, true); //Uncomment to run Objective3 as standalone (it is called in Objective 2 to add to information list)
         LOGGER.log(Level.INFO, "Application Ended");
     }
 }

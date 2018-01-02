@@ -9,13 +9,11 @@ public class ParsedData {
     private ArrayList<FlightDetails> allFlights = new ArrayList<>();
     private ArrayList<AirportDetails> allAirports = new ArrayList<>();
 
-    public void addPassenger(PassengerDetails passenger) {
-        //TODO: Duplicate Passenger validation can go here, so check if there is already existing object with flightID & PassengerID, unless another idea crops up for this validation.
+    public void addPassenger(PassengerDetails passenger) { //Future Consideration: Duplicate Passenger/Flight could go here.
         allPassengers.add(passenger);
     }
 
     public void addFlight(FlightDetails flight) {
-        //TODO: If Flight is not valid, remove the passenger entry (it shouldn't be considered)
         boolean flightAlreadyExists = false; //Structure relies on one entry per flight
         for (FlightDetails existingFlight: allFlights) {
             if (existingFlight.getValueByName(Keys.FlightID) == flight.getValueByName(Keys.FlightID)) {
@@ -27,7 +25,6 @@ public class ParsedData {
 
         if (!flightAlreadyExists)
                 allFlights.add(flight);
-
 
     }
 
@@ -52,23 +49,13 @@ public class ParsedData {
             if (flight.getValueByName(Keys.FlightID) == FlightID)
                 return flight;
 
-        return null; //Flight wasn't found. TODO: Handle this error.
+        return null;
     }
 
     public AirportDetails getAirportDetailsByCode(String AirportCode) {
         for (AirportDetails airport: allAirports)
             if (airport.getValueByName(Keys.AirportCode).equals(AirportCode))
                 return airport;
-
         return null;
-    }
-
-    public int countValidPassengerEntries() { //TODO: Use this somewhere
-        return allPassengers.size();
-    }
-
-    public int countValidAirportEntries() {
-        return allAirports.size();
-
     }
 }

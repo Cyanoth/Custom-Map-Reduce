@@ -6,8 +6,8 @@ public class AirportDetails extends AbstractDetails {
     private final double latitude;
     private final double longitude;
 
-    AirportDetails(String airportName, String airportCode, String latitude, String longitude) {
-
+    AirportDetails(String airportName, String airportCode, String latitude, String longitude, int fromLineNumber) {
+        super.fromLineNumber = fromLineNumber;
         this.latitude = parseValidateLongitudeLatitude(latitude, "Latitude");
         this.longitude = parseValidateLongitudeLatitude(longitude, "Longitude");
         this.airportName = airportName;
@@ -21,14 +21,14 @@ public class AirportDetails extends AbstractDetails {
         Pattern pattern_airportName = Pattern.compile("[A-Z\\s\\/]{3,20}"); //Pattern A-Z 3 to 20 length
 
         if (!pattern_airportCode.matcher(this.airportCode).matches())
-            super.handleError("Airport Code: '" + this.airportCode + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " Airport Code: '" + this.airportCode + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
 
         else if (!pattern_airportName.matcher(this.airportName).matches())
-            super.handleError("Airport Name: '" + this.airportName + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " Airport Name: '" + this.airportName + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
 
     }
 
-    private double parseValidateLongitudeLatitude(String parsevalue, String type) {
+    private double parseValidateLongitudeLatitude(String parsevalue, String latOrLong) {
         try {
             double result = Double.parseDouble(parsevalue);
 
@@ -40,7 +40,7 @@ public class AirportDetails extends AbstractDetails {
                 return result;
         }
         catch (NumberFormatException e) {
-            super.handleError(type + ": '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " " + latOrLong + ": '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
             return -1;
         }
     }

@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 public class ErrorManager {
     private static final Logger LOGGER = Logger.getLogger(ErrorType.class.getName());
 
-    private static String errorLog = "";
+    private static String errorLog = ""; //TODO: Implement Error Log
     private static int totalWarnings = 0;
     private static boolean fatalErrorOccurred = false;
 

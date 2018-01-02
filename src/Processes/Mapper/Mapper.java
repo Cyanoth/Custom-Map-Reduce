@@ -26,31 +26,23 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
         LOGGER.log(Level.FINE, "A Key-Value mapper with the ID: " + mMapperID + " has been initialized");
     }
 
-    public int addEntry(AbstractDetails obj) {
-        //TODO: Systmatic Checking should take place in this function.
-        try {
-            mDataChunk.add(obj);
-            LOGGER.log(Level.FINE, "Added an entity to the mapper: " + mMapperID);
-            return 0; //return success.
-        }
-        catch (Exception e) {
-            return -1;
-        }
+    public void addEntry(AbstractDetails obj) {
+        mDataChunk.add(obj);
+        LOGGER.log(Level.FINE, "Added an entity to the mapper: " + mMapperID);
     }
 
     @Override
     public ArrayList<KeyValuePair> call() { //Returns mapped results
-        //TODO: Checker mapper actually has entities to return.
         LOGGER.log(Level.INFO, "A Mapper with the ID: " + mMapperID + " has started!");
         ArrayList<KeyValuePair> mappedEntries = new ArrayList<>();
 
-        for (int i = 0; i < mDataChunk.size(); i++) {
+        for (AbstractDetails dataChunk : mDataChunk) {
             KeyValuePair mappedPair;
 
             if (mapToValue == null)
-                mappedPair = new KeyValuePair((String) mDataChunk.get(i).getValueByName(mapKey), 1);
+                mappedPair = new KeyValuePair(dataChunk.getValueByName(mapKey), 1);
             else
-                mappedPair = new KeyValuePair((String) mDataChunk.get(i).getValueByName(mapKey), mDataChunk.get(i).getValueByName(mapToValue));
+                mappedPair = new KeyValuePair(dataChunk.getValueByName(mapKey), dataChunk.getValueByName(mapToValue));
 
             mappedEntries.add(mappedPair);
         }

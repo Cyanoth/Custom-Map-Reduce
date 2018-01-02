@@ -5,9 +5,12 @@ import java.util.logging.Logger;
 public class Objective2 {
     private static final Logger LOGGER = Logger.getLogger(Objective2.class.getName());
 
-    public static int startObjective2() {
+    public static void startObjective2() {
         LOGGER.log(Level.INFO, "Starting Objective 2");
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
+        if (ErrorManager.hasFatalErrorOccurred()) { return; }//Fatal Error Occurred, Cannot Continue.
+
+
         MapperManager mMapperManager = new MapperManager();
         ReducerManager mReducerManager = new ReducerManager();
 
@@ -20,7 +23,6 @@ public class Objective2 {
 
         outputResults(parsedEntries, reducedPassengerList, totalPassengerCount);
 
-        return 0;
     }
 
 

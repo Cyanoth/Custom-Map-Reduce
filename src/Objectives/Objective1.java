@@ -5,13 +5,11 @@ import java.util.logging.Logger;
 public class Objective1 {
     private static final Logger LOGGER = Logger.getLogger(Objective1.class.getName());
 
-    public static int startObjective1() {
+    public static void startObjective1() {
         LOGGER.log(Level.INFO, "Starting Objective 1");
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
+        if (ErrorManager.hasFatalErrorOccurred()) { return; }//Fatal Error Occurred, Cannot Continue.
 
-
-        if (ErrorManager.hasFatalErrorOccurred()) //Fatal Parsing Occurred Error, Cannot Continue Map/Reduce Functions.
-            return -1;
 
         MapperManager mMapperManager = new MapperManager();
         ReducerManager mReducerManager = new ReducerManager();
@@ -23,7 +21,6 @@ public class Objective1 {
         ArrayList<KeyValuePair> reducedEntities = mReducerManager.executeAllReducerThreads();
         String unusedAirports = getUnusedAirports(parsedEntries.getAllAirports(), reducedEntities);
         outputResults(reducedEntities, unusedAirports);
-        return 0;
     }
 
     private static void outputResults(ArrayList<KeyValuePair> results, String unusedAirportResults) {
@@ -54,7 +51,9 @@ public class Objective1 {
             if (!contained)
                 builder.append(entry.getValueByName(Keys.AirportCode)).append(", ");
         }
-        builder.delete(builder.length() - 2, builder.length()); //Get rid of the last comma (TODO: should ensure there is something to delete)
+        if (builder.length() > 3) //Prevent runtime error, in case of failure.
+           builder.delete(builder.length() - 2, builder.length()); //Get rid of the last comma
+
         return builder.toString();
 
     }

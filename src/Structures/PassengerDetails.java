@@ -3,13 +3,18 @@ import java.util.regex.Pattern;
 public class PassengerDetails extends AbstractDetails {
     private final String passengerID;
     private final String flightID;
+    private FlightDetails flightDetails; //Optional, can be used in the future to map passengers to airports or anything else.
 
-    PassengerDetails(String passengerID, String flightID)
-    {
+    PassengerDetails(String passengerID, String flightID, int fromLineNumber) {
+        super.fromLineNumber = fromLineNumber;
         this.passengerID = passengerID;
         this.flightID = flightID;
         performPatternValidation();
-      }
+    }
+
+    public void linkFlightDetails(FlightDetails details) {
+            flightDetails = details;
+    }
 
     @Override
     protected void performPatternValidation() {
@@ -17,10 +22,10 @@ public class PassengerDetails extends AbstractDetails {
         Pattern pattern_flightID = Pattern.compile("[A-Z]{3}[0-9]{4}[A-Z]"); //Pattern: XXXnnnnX
 
         if (!pattern_passengerID.matcher(this.passengerID).matches()) //If passengerID does not match the pattern
-            super.handleError("PassengerID: + '" + this.passengerID + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " PassengerID: + '" + this.passengerID + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
 
         else if (!pattern_flightID.matcher(this.flightID).matches())
-            super.handleError("FlightID: '" + this.flightID + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " FlightID: '" + this.flightID + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
 
     }
 

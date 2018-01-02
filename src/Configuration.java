@@ -4,6 +4,6 @@ public class Configuration {
 
     public static final int MAX_RUNNING_REDUCERS = 5; //The amount of Reducers objects that can be running at anyone time.
 
-    public static String passengerDataFilePath = "/home/charlie/Documents/MapReduce-AdvComp/Data/AComp_Passenger_data.csv";
-    public static String airportDataFilePath = "/home/charlie/Documents/MapReduce-AdvComp/Data/Top30_airports_LatLong.csv";
+    public static String passengerDataFilePath = "/media/charlie/OSSHARED/Shared Development/MapReduce-AdvComp/Data/AComp_Passenger_data.csv";
+    public static String airportDataFilePath = "/media/charlie/OSSHARED/Shared Development/MapReduce-AdvComp/Data/Top30_airports_LatLong.csv";
 }
