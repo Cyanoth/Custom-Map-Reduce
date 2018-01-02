@@ -14,7 +14,7 @@ public class MapperManager {
     {
         int amountOfEntries = data.size();
 
-        int mappersToCreate = (int) Math.ceil(amountOfEntries / Configuration.MAX_MAPPER_DATAENTRIES); //Create this many mapper objects.
+        int mappersToCreate = (int) Math.ceil((double) amountOfEntries / Configuration.MAX_MAPPER_DATAENTRIES); //Create this many mapper objects.
         mMappers = new Mapper[mappersToCreate];
         LOGGER.log(Level.INFO, "Allocated memory for: " + mappersToCreate + " mapper objects.");
 
