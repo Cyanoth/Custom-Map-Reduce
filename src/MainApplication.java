@@ -18,7 +18,6 @@ public class MainApplication
         if (selectTop30DataFile() && selectPassengerDataFile() && saveOutputFile()) {
             Objective1.startObjective1();
             Objective2.startObjective2();
-            //Objective3.startObjective3(null, true); //Uncomment to run Objective3 as standalone (it is called in Objective 2 to add to information list)
         }
         //TODO: Close output file.
         OutputFile.write(ErrorManager.outputErrorLog());

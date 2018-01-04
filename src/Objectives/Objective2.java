@@ -20,8 +20,8 @@ public class Objective2 {
 
         mReducerManager.createReducerObjects(mappedPassengerOnFlights, Reducer.Type.Concatenate);
         ArrayList<KeyValuePair> reducedPassengerList = mReducerManager.executeAllReducerThreads();
-//        ArrayList<KeyValuePair> totalPassengerCount = Objective3.startObjective3(parsedEntries, false);
-        ArrayList<KeyValuePair> totalPassengerCount = null;
+        ArrayList<KeyValuePair> totalPassengerCount = Objective3.startObjective3(reducedPassengerList);
+
 
         outputResults(parsedEntries, reducedPassengerList, totalPassengerCount);
         ErrorManager.displayErrorSummary();
@@ -31,20 +31,19 @@ public class Objective2 {
 
     private static void outputResults(ParsedData data, ArrayList<KeyValuePair> flights, ArrayList<KeyValuePair> passengerCount) {
         StringBuilder outputBuilder = new StringBuilder();
-        outputBuilder.append("\n\n\n----------------------------\nObjective 2 Results - List of Flights based on Flight ID\n----------------------------\n");
+        outputBuilder.append("\n\n\n----------------------------\nObjective 2 & 3 Results - List of Flights based on Flight ID\n----------------------------\n");
         for (int i = 0; i < flights.size(); i++ ) {
             KeyValuePair reducedPassengerEntries = flights.get(i);
-          //  KeyValuePair reducedPassengerCount = passengerCount.get(i);
+            KeyValuePair reducedPassengerCount = passengerCount.get(i);
 
-//            if (reducedPassengerEntries.getMapKey() != reducedPassengerCount.getMapKey()) {
-//                LOGGER.log(Level.SEVERE, "ABORT: Unknown Error - This error can only appear if reducers have mapped different data?");
-//                return;
-//            }
+            if (reducedPassengerEntries.getMapKey() != reducedPassengerCount.getMapKey()) {
+                LOGGER.log(Level.SEVERE, "ABORT: Unknown Error - This error can only appear if reducers have mapped different data?");
+                return;
+            }
 
             FlightDetails flightDetails = data.getFlightDetailsByID((String) reducedPassengerEntries.getMapKey());
             outputBuilder.append("Flight ID: " + reducedPassengerEntries.getMapKey() + "\n");
-//            outputBuilder.append("\tTotal Passengers: " + reducedPassengerCount.getMapValue() + "\n");
-            outputBuilder.append("\tTotal Passengers: " + "0" + "\n");
+            outputBuilder.append("\tTotal Passengers: " + reducedPassengerCount.getMapValue() + "\n");
 
             outputBuilder.append("\tPassenger ID's: ");
             outputBuilder.append(formatPassengerID((String) reducedPassengerEntries.getMapValue()) + "\n");

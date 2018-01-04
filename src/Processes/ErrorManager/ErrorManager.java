@@ -7,6 +7,8 @@ public class ErrorManager {
 
     private static String errorLog = "";
     private static int totalWarnings = 0;
+    private static int parsingErrors = 0;
+    private static int logicalErrors = 0;
     private static boolean fatalErrorOccurred = false;
 
 
@@ -14,6 +16,12 @@ public class ErrorManager {
        if (errorType == ErrorType.Warning) {
            LOGGER.log(Level.WARNING, errorKind.toString() + " error occurred: " + errorDescription);
            errorLog += "Warning: " + errorKind.toString() + " error occurred: " + errorDescription + "\n";
+
+           if (errorKind == ErrorKind.Parsing)
+               parsingErrors++;
+           else if (errorKind == ErrorKind.Logical)
+               logicalErrors++;
+
            totalWarnings++;
        } else if (errorType == ErrorType.Fatal) {
            LOGGER.log(Level.SEVERE, errorKind.toString() + " error occurred: " + errorDescription);
@@ -42,6 +50,7 @@ public class ErrorManager {
         outputBuilder.append("\n\n**************\nError Summary\n**************\n");
         outputBuilder.append("Fatal Error Occurred: " + fatalErrorOccurred + "\n");
         outputBuilder.append("Total Warnings: " + totalWarnings + "\n");
+        outputBuilder.append("Parsing Errors: " + parsingErrors + " Logical Errors: " + logicalErrors + "\n");
         outputBuilder.append("****************** Error Log *******************\n");
         outputBuilder.append(errorLog);
         return  outputBuilder.toString();
