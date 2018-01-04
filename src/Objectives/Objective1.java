@@ -7,6 +7,7 @@ public class Objective1 {
 
     public static void startObjective1() {
         LOGGER.log(Level.INFO, "Starting Objective 1");
+        ErrorManager.resetErrorManager();
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
         if (ErrorManager.hasFatalErrorOccurred()) { return; }//Fatal Error Occurred, Cannot Continue.
 
@@ -21,6 +22,8 @@ public class Objective1 {
         ArrayList<KeyValuePair> reducedEntities = mReducerManager.executeAllReducerThreads();
         String unusedAirports = getUnusedAirports(parsedEntries.getAllAirports(), reducedEntities);
         outputResults(reducedEntities, unusedAirports);
+        ErrorManager.displayErrorSummary();
+
     }
 
     private static void outputResults(ArrayList<KeyValuePair> results, String unusedAirportResults) {

@@ -7,6 +7,7 @@ public class Objective2 {
 
     public static void startObjective2() {
         LOGGER.log(Level.INFO, "Starting Objective 2");
+        ErrorManager.resetErrorManager();
         ParsedData parsedEntries = DataFileParser.parseAllFiles();
         if (ErrorManager.hasFatalErrorOccurred()) { return; }//Fatal Error Occurred, Cannot Continue.
 
@@ -22,7 +23,7 @@ public class Objective2 {
         ArrayList<KeyValuePair> totalPassengerCount = Objective3.startObjective3(parsedEntries, true);
 
         outputResults(parsedEntries, reducedPassengerList, totalPassengerCount);
-
+        ErrorManager.displayErrorSummary();
     }
 
 

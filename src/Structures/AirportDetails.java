@@ -8,8 +8,8 @@ public class AirportDetails extends AbstractDetails {
 
     AirportDetails(String airportName, String airportCode, String latitude, String longitude, int fromLineNumber) {
         super.fromLineNumber = fromLineNumber;
-        this.latitude = parseValidateLongitudeLatitude(latitude, "Latitude");
-        this.longitude = parseValidateLongitudeLatitude(longitude, "Longitude");
+        this.latitude = parseValidateLatitude(latitude);
+        this.longitude = parseValidateLongitude(longitude);
         this.airportName = airportName;
         this.airportCode = airportCode;
         performPatternValidation();
@@ -28,22 +28,40 @@ public class AirportDetails extends AbstractDetails {
 
     }
 
-    private double parseValidateLongitudeLatitude(String parsevalue, String latOrLong) {
+    private double parseValidateLongitude(String parsevalue) {
         try {
             double result = Double.parseDouble(parsevalue);
 
-//            if (result < 999 || result > 9999999999999D) { //TODO: Fix the validation for Lat/Long
-//                super.handleError(type + ": '" + parsevalue + "' is invalid! (It is out of range!)", ErrorType.Warning);
-//                return -1;
-//            }
-//            else
+            if (result > -180.0 && result < 180.0)
                 return result;
+            else {
+                super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It is not within range for longitude!)", ErrorType.Warning);
+                return -1;
+            }
         }
         catch (NumberFormatException e) {
-            super.handleError("Line: " + fromLineNumber + " " + latOrLong + ": '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
+            super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
             return -1;
         }
     }
+
+    private double parseValidateLatitude(String parsevalue) {
+        try {
+            double result = Double.parseDouble(parsevalue);
+
+            if (result > -90.0 && result < 90.0)
+                return result;
+            else {
+                super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It is not within range for longitude!)", ErrorType.Warning);
+                return -1;
+            }
+        }
+        catch (NumberFormatException e) {
+            super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
+            return -1;
+        }
+    }
+
 
     @Override
     public Object getValueByName(Keys keyname) //Return string, long or int depending on keyType

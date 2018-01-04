@@ -8,8 +8,10 @@ public class Objective3 {
     public static ArrayList<KeyValuePair> startObjective3(ParsedData data, boolean outputToScreen) {
         LOGGER.log(Level.INFO, "Starting Objective 3");
 
-        if (data == null) //Makes objective 3 standalone, if not called from objective2 then get its own records.
+        if (data == null) { //Makes objective 3 standalone, if not called from objective2 then get its own records.
+            ErrorManager.resetErrorManager();
             data = DataFileParser.parseAllFiles();
+        }
 
         if (ErrorManager.hasFatalErrorOccurred()) { return null; }//Fatal Error Occurred, Cannot Continue.
 
@@ -25,6 +27,7 @@ public class Objective3 {
         if (outputToScreen)
             outputResults(reducedPassengerCount);
 
+        ErrorManager.displayErrorSummary();
         return reducedPassengerCount;
     }
 
@@ -37,5 +40,6 @@ public class Objective3 {
                 System.out.print("\n");
 
         }
+        System.out.println("\n");
     }
 }

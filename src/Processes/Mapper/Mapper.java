@@ -15,7 +15,6 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
     {
         this.mapKey = mapKey;
         this.mMapperID = mapperID;
-        LOGGER.log(Level.FINE, "A Counter Mapper with the ID: " + mMapperID + " has been initialized!");
     }
 
     Mapper(Keys mapKeyName, Keys mapKeyValue, int mapperID) //Key-Value mapper.
@@ -23,12 +22,10 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
         this.mapKey = mapKeyName;
         this.mapToValue = mapKeyValue;
         this.mMapperID = mapperID;
-        LOGGER.log(Level.FINE, "A Key-Value mapper with the ID: " + mMapperID + " has been initialized");
     }
 
     public void addEntry(AbstractDetails obj) {
         mDataChunk.add(obj);
-        LOGGER.log(Level.FINE, "Added an entity to the mapper: " + mMapperID);
     }
 
     @Override
@@ -46,7 +43,6 @@ public class Mapper implements Callable<ArrayList<KeyValuePair>> {
 
             mappedEntries.add(mappedPair);
         }
-        LOGGER.log(Level.FINE, "Execution of mapper thread " + mMapperID + " has completed.");
         return mappedEntries;
     }
 }

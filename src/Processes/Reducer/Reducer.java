@@ -16,12 +16,10 @@ public class Reducer implements Callable<KeyValuePair> {
         this.mReducerID = reducerThreadID;
         this.mReducerType = reducerType;
         mStoredKeysValuePairs = new ArrayList<>();
-        LOGGER.log(Level.FINE, "A Reducer with the ID: " + mReducerID + " has been initialized!");
     }
 
     public void addKeyValuePair(KeyValuePair obj) {
         mStoredKeysValuePairs.add(obj);
-        LOGGER.log(Level.FINE, "Added an entity to the reducer: " + mReducerID);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class Reducer implements Callable<KeyValuePair> {
         for (KeyValuePair singlePair : mStoredKeysValuePairs) {
             if (mReducerType == Type.Count)
                 totalCount += (int) singlePair.getMapValue();
-            else if (mReducerType == Type.Concatenate) {  //TODO: Ensure that each is passengerEntry is unique for a flight (this simply adds one for now)
+            else if (mReducerType == Type.Concatenate) {
                 valueResult.append(singlePair.getMapValue()).append(" ");
             }
         }

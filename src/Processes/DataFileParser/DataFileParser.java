@@ -22,16 +22,16 @@ public class DataFileParser {
         ParsedData parsedPassengersAndFlights = currentData;
         if (currentData == null)
             parsedPassengersAndFlights= new ParsedData();
-
+        BufferedReader csvReader;
         try {
-            BufferedReader csvReader = new BufferedReader(new FileReader(Configuration.passengerDataFilePath));
+            csvReader = new BufferedReader(new FileReader(Configuration.passengerDataFilePath));
             String currentLine;
             int currentLineNumber = 1;
 
             while ((currentLine = csvReader.readLine()) != null) {
                 String[] sl = currentLine.split(",");
                 if (sl.length < 6)
-                    ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
+                    ErrorManager.generateError("[Passenger File] Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
                     FlightDetails parsedLineFlight = new FlightDetails(sl[1], sl[2], sl[3], sl[4], sl[5], currentData, currentLineNumber); //Get the flight details from the line.
 
@@ -47,6 +47,7 @@ public class DataFileParser {
                     currentLineNumber++;
                 }
             }
+            csvReader.close();
             LOGGER.log(Level.INFO, "Parsed Passenger Data File Successfully!");
         }
         catch (IOException e)
@@ -70,7 +71,7 @@ public class DataFileParser {
             while ((currentLine = csvReader.readLine()) != null) {
                 String[] sl = currentLine.split(",");
                 if (sl.length < 4)
-                    ErrorManager.generateError("Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
+                    ErrorManager.generateError("[Top30 Airports] Invalid amount or missing arguments on line: " + currentLineNumber, ErrorType.Warning, ErrorKind.Parsing);
                 else {
                     AirportDetails airport = new AirportDetails(sl[0], sl[1], sl[2], sl[3], currentLineNumber);
                     boolean airportAlreadyExists = false;
