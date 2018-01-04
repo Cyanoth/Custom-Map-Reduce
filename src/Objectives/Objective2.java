@@ -20,7 +20,8 @@ public class Objective2 {
 
         mReducerManager.createReducerObjects(mappedPassengerOnFlights, Reducer.Type.Concatenate);
         ArrayList<KeyValuePair> reducedPassengerList = mReducerManager.executeAllReducerThreads();
-        ArrayList<KeyValuePair> totalPassengerCount = Objective3.startObjective3(parsedEntries, true);
+//        ArrayList<KeyValuePair> totalPassengerCount = Objective3.startObjective3(parsedEntries, false);
+        ArrayList<KeyValuePair> totalPassengerCount = null;
 
         outputResults(parsedEntries, reducedPassengerList, totalPassengerCount);
         ErrorManager.displayErrorSummary();
@@ -29,31 +30,34 @@ public class Objective2 {
 
 
     private static void outputResults(ParsedData data, ArrayList<KeyValuePair> flights, ArrayList<KeyValuePair> passengerCount) {
-        System.out.println("\n----------------------------\n\t\tResults\n----------------------------");
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append("\n\n\n----------------------------\nObjective 2 Results - List of Flights based on Flight ID\n----------------------------\n");
         for (int i = 0; i < flights.size(); i++ ) {
             KeyValuePair reducedPassengerEntries = flights.get(i);
-            KeyValuePair reducedPassengerCount = passengerCount.get(i);
+          //  KeyValuePair reducedPassengerCount = passengerCount.get(i);
 
-            if (reducedPassengerEntries.getMapKey() != reducedPassengerCount.getMapKey()) {
-                LOGGER.log(Level.SEVERE, "ABORT: Unknown Error - This error can only appear if reducers have mapped different data?");
-                return;
-            }
+//            if (reducedPassengerEntries.getMapKey() != reducedPassengerCount.getMapKey()) {
+//                LOGGER.log(Level.SEVERE, "ABORT: Unknown Error - This error can only appear if reducers have mapped different data?");
+//                return;
+//            }
 
             FlightDetails flightDetails = data.getFlightDetailsByID((String) reducedPassengerEntries.getMapKey());
-            System.out.println("Flight ID: " + reducedPassengerEntries.getMapKey());
-            System.out.println("\tTotal Passengers: " + reducedPassengerCount.getMapValue());
+            outputBuilder.append("Flight ID: " + reducedPassengerEntries.getMapKey() + "\n");
+//            outputBuilder.append("\tTotal Passengers: " + reducedPassengerCount.getMapValue() + "\n");
+            outputBuilder.append("\tTotal Passengers: " + "0" + "\n");
 
-            System.out.print("\tPassenger ID's: ");
-                System.out.println(formatPassengerID((String) reducedPassengerEntries.getMapValue()));
+            outputBuilder.append("\tPassenger ID's: ");
+            outputBuilder.append(formatPassengerID((String) reducedPassengerEntries.getMapValue()) + "\n");
 
-            System.out.println("\tOriginating From Airport (IATA/FAA): "  + data.getAirportDetailsByCode((String) flightDetails.getValueByName(Keys.FromAirport)).getFormattedairportNameCode());
-            System.out.println("\tDestination To Airport (IATA/FAA): " + data.getAirportDetailsByCode((String) flightDetails.getValueByName(Keys.ToAirport)).getFormattedairportNameCode());
-            System.out.println("\tDeparture Time: " + flightDetails.getFormattedDepartureTime());
-            System.out.println("\tArrival Time: " + flightDetails.calculateArrivalTime());
-            System.out.println("\tTotal Flight Time: " + flightDetails.getFormattedFlightTime());
-            System.out.println("\n");
-
+            outputBuilder.append("\tOriginating From Airport (IATA/FAA): "  + data.getAirportDetailsByCode((String) flightDetails.getValueByName(Keys.FromAirport)).getFormattedairportNameCode() + "\n");
+            outputBuilder.append("\tDestination To Airport (IATA/FAA): " + data.getAirportDetailsByCode((String) flightDetails.getValueByName(Keys.ToAirport)).getFormattedairportNameCode() + "\n");
+            outputBuilder.append("\tDeparture Time: " + flightDetails.getFormattedDepartureTime() + "\n");
+            outputBuilder.append("\tArrival Time: " + flightDetails.calculateArrivalTime() + "\n");
+            outputBuilder.append("\tTotal Flight Time: " + flightDetails.getFormattedFlightTime() + "\n");
+            outputBuilder.append("\n");
         }
+        OutputFile.write(outputBuilder.toString());
+        System.out.println(outputBuilder.toString());
     }
 
     private static String formatPassengerID(String passengerValueList) {

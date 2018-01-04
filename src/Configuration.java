@@ -10,6 +10,5 @@ public class Configuration {
     public static File passengerDataFilePath;
     public static File airportDataFilePath;
 
-    public static Path outputPath;
-    
+
 }

@@ -27,16 +27,19 @@ public class Objective1 {
     }
 
     private static void outputResults(ArrayList<KeyValuePair> results, String unusedAirportResults) {
-        System.out.println("\n----------------------------\n\t\tResults: Total Airports\n----------------------------");
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append("\n----------------------------\nObjective 1 Results - Total Flights By Airports\n----------------------------\n");
         int lineCount = 0;
         for (KeyValuePair result: results) {
-                System.out.print(result.asFormattedOutputString() + "  |  ");
+                outputBuilder.append(result.asFormattedOutputString() + "  |  ");
                 if (++lineCount % 5 == 0)
-                    System.out.print("\n");
+                    outputBuilder.append("\n");
 
         }
-        System.out.println("\nUnused Airports (from the Top-30 Airports):");
-        System.out.println(unusedAirportResults);
+        outputBuilder.append("\nUnused Airports (from the Top-30 Airports):");
+        outputBuilder.append(unusedAirportResults);
+        OutputFile.write(outputBuilder.toString());
+        System.out.println(outputBuilder.toString());
     }
 
     private static String getUnusedAirports(ArrayList<AirportDetails> airportEntries, ArrayList<KeyValuePair> reducedEntries)

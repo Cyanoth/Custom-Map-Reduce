@@ -37,6 +37,16 @@ public class ErrorManager {
         return errorLog;
     }
 
+    public static String outputErrorLog() {
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append("\n\n**************\nError Summary\n**************\n");
+        outputBuilder.append("Fatal Error Occurred: " + fatalErrorOccurred + "\n");
+        outputBuilder.append("Total Warnings: " + totalWarnings + "\n");
+        outputBuilder.append("****************** Error Log *******************\n");
+        outputBuilder.append(errorLog);
+        return  outputBuilder.toString();
+    }
+
     public static void resetErrorManager() {
         errorLog = "";
         totalWarnings = 0;

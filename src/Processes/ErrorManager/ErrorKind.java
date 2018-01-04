@@ -1,1 +1,1 @@
-public enum ErrorKind { Parsing, Other }
+public enum ErrorKind { Parsing, Logical, Other }

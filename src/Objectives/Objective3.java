@@ -32,14 +32,17 @@ public class Objective3 {
     }
 
     private static void outputResults(ArrayList<KeyValuePair> results) {
-        System.out.println("\n----------------------------\n\t\tResults: Passenger Counts\n----------------------------");
+        StringBuilder outputBuilder = new StringBuilder();
+        outputBuilder.append("\n\n\n----------------------------\nObjective 3 Results - Passenger count on each Flight.\n----------------------------\n");
         int lineCount = 0;
         for (KeyValuePair result: results) {
-            System.out.print(result.asFormattedOutputString() + "  |  ");
+            outputBuilder.append(result.asFormattedOutputString() + "  |  ");
             if (++lineCount % 5 == 0)
-                System.out.print("\n");
+                outputBuilder.append("\n");
 
         }
-        System.out.println("\n");
+        outputBuilder.append("\n");
+        OutputFile.write(outputBuilder.toString());
+        System.out.println(outputBuilder.toString());
     }
 }
