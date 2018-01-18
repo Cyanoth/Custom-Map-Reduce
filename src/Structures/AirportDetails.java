@@ -2,7 +2,7 @@ import java.util.regex.Pattern;
 
 /**
  * A data detail object that stores the data from a row of parsed data from the Top30 Airport File in memory.
- * Details are parsed from the DataParser to this object through the constructor and then the validation function is called
+ * Details are passed from the DataParser to this object through the constructor and then the validation function is called
  * If a validation error occurs, this object is marked as having an error and is no longer considered part of the data file.
  */
 public class AirportDetails extends AbstractDetails {
@@ -46,47 +46,56 @@ public class AirportDetails extends AbstractDetails {
     }
 
     /**
-     * Validates a Longitude
-     * @param parsevalue
-     * @return
+     * Validates a Longitude String and converts the result to a double.
+     * @param parsevalue The Longitude String which has been parsed from the DataFile.
+     * @return  If successful, return it as a double. Otherwise generate error and return -1.
      */
     private double parseValidateLongitude(String parsevalue) {
-        try {
+        try { //Try to convert from String to Double. If it fails, go to 'Catch'
             double result = Double.parseDouble(parsevalue);
 
-            if (result > -180.0 && result < 180.0)
+            if (result > -180.0 && result < 180.0) //Check is within range for Longitude.
                 return result;
             else {
                 super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It is not within range for longitude!)", ErrorType.Warning);
                 return -1;
             }
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e) { //Can't convert ot Double.
             super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
             return -1;
         }
     }
 
+    /**
+     * Validates a Latitude String and converts the result to a double.
+     * @param parsevalue The Latitude String which has been parsed from the DataFile.
+     * @return  If successful, return it as a double. Otherwise generate error and return -1.
+     */
     private double parseValidateLatitude(String parsevalue) {
-        try {
+        try { //Try to convert from String to Double. If it fails, go to 'Catch'
             double result = Double.parseDouble(parsevalue);
 
-            if (result > -90.0 && result < 90.0)
+            if (result > -90.0 && result < 90.0) //Check is within range for Latitude.
                 return result;
             else {
                 super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It is not within range for longitude!)", ErrorType.Warning);
                 return -1;
             }
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e) { //Can't convert ot Double.
             super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
             return -1;
         }
     }
 
 
+    /**
+     * @param keyname Get the value of a Key (see Enum: Keys)
+     * @return The value stored in the relevant Key.
+     */
     @Override
-    public Object getValueByName(Keys keyname) //Return string, long or int depending on keyType
+    public Object getValueByName(Keys keyname)
     {
         switch (keyname) {
             case AirportName:
@@ -97,12 +106,15 @@ public class AirportDetails extends AbstractDetails {
                 return latitude;
             case Longitude:
                 return longitude;
-            default://This should never be hit due to enum restrictions.
-                handleError("Warning! The code requested an invalid KeyName: " + keyname.toString(), ErrorType.Fatal);
+            default: //Should not be hit, will only occur if code requests a key not related to the details object.
+                handleError("Warning! The code requested an invalid KeyName: " + keyname.toString(), ErrorType.Fatal); //Fatal since this is potentially a code issue and may generate invalid results.
                 return "INVALID_KEY";
         }
     }
 
+    /**
+     * @return A formatted String containing the Airport Code & Name. Used for objective two. ie: ABC (London Airport)
+     */
     public String getFormattedAirportNameCode() {
         return airportCode + " (" + airportName + ")";
     }
