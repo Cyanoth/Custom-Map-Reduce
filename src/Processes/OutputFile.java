@@ -3,28 +3,36 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * A static class that has functions which write to a file on disk.
+ * The outputFile should be selected by the user at program startup.
+ */
 public class OutputFile {
+    public static File outputFile; //File Object (on-disk) where the log-entries will be outputted to.
 
-    public static File outputFile;
-    private static boolean fileOpen = false;
-    private static boolean fileReady = false;
-
+    /**
+     * Should only be called once when the OutputFile is first created.
+     * This adds introduction text to the output file including the configuration parameters.
+     */
     public static void addIntroText() {
         write("Charles Knight -- 23012360 -- Advanced Computing CS3AC16\n-----------------------------------------------\n\n");
 
-        StringBuilder configText = new StringBuilder();
-        configText.append("Configuration: \n");
-        configText.append("Maximum Simultaneous Mappers: " + Configuration.MAX_RUNNING_MAPPERS);
-        configText.append("\nMaximum Entries Per Mapper: " + Configuration.MAX_MAPPER_DATAENTRIES);
-        configText.append("\nMaximum Simultaneous Reducers: " + Configuration.MAX_RUNNING_REDUCERS);
-        configText.append("\nPassenger Data File Path:  " + Configuration.passengerDataFilePath);
-        configText.append("\nAirport Data File Path: " + Configuration.airportDataFilePath + "\n");
-        write(configText.toString());
+        String configText = "Configuration: \n" +
+                "Maximum Simultaneous Mappers: " + Configuration.MAX_RUNNING_MAPPERS +
+                "\nMaximum Entries Per Mapper: " + Configuration.MAX_MAPPER_DATAENTRIES +
+                "\nMaximum Simultaneous Reducers: " + Configuration.MAX_RUNNING_REDUCERS +
+                "\nPassenger Data File Path:  " + Configuration.passengerDataFilePath +
+                "\nAirport Data File Path: " + Configuration.airportDataFilePath + "\n";
+        write(configText);
     }
 
+    /**
+     * Opens the output file and writes a string to the text file.
+     * Closes & Flushes are written or when an error occurs.
+     * @param text String to write to the text file.
+     */
     public static void write(String text) {
         BufferedWriter bw = null;
-
         try {
             bw = new BufferedWriter(new FileWriter(outputFile, true));
             bw.write(text);
@@ -32,7 +40,7 @@ public class OutputFile {
         } catch (IOException ioE) {
             ErrorManager.generateError("Failed to write to output file, See Log for more details.", ErrorType.Fatal, ErrorKind.Other);
             ioE.printStackTrace();
-        } finally {
+        } finally { //Always close output file onces finished (or error)
             if (bw != null) try {
                 bw.close();
             }

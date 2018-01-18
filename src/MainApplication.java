@@ -6,27 +6,33 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.*;
 
-/**
- * Created by Charlie on 09/11/2017.
- */
 public class MainApplication
 {
     private static final Logger LOGGER = Logger.getLogger(MainApplication.class.getName());
 
+    /**
+     * Initial function for the application. Asks users to select the data files & outputs
+     * and then starts the objectives. Comment out objectives to stop them running.
+     * @param args Redundant.
+     */
     public static void main(String[] args){
         LOGGER.log(Level.INFO, "Application Started");
-        if (selectTop30DataFile() && selectPassengerDataFile() && saveOutputFile()) {
+        if (selectTop30DataFile() && selectPassengerDataFile() && saveOutputFile()) { //If all files are selected
             Objective1.startObjective1();
             Objective2.startObjective2();
+            Objective3_Standalone.startObjective3();
         }
-        //TODO: Close output file.
-        OutputFile.write(ErrorManager.outputErrorLog());
+        OutputFile.write(ErrorManager.outputErrorLog()); //After all objectives, write the ErrorLog to File.
         LOGGER.log(Level.INFO, "Application Ended");
     }
 
+    /**
+     * Opens the File Select dialog which prompts the user to select the Top30 Airport file on Disk
+     * @return True if a file was selected. False to abort program.
+     */
     private static boolean selectTop30DataFile() {
         LOGGER.log(Level.INFO, "Asking User To Select Top30 Data File...");
-        FileDialog dialog = new FileDialog(new JFrame(), "Choose Top30 Airport DataFile", FileDialog.LOAD); //Windows dialog to select file.
+        FileDialog dialog = new FileDialog(new JFrame(), "Choose Top30 Airport DataFile", FileDialog.LOAD); //Dialog to select file.
         dialog.setVisible(true);
 
         if (dialog.getFile() == null) {
@@ -39,9 +45,13 @@ public class MainApplication
         }
     }
 
+    /**
+     * Opens the File Select dialog which prompts the user to select the Passenger Data file on Disk
+     * @return True if a file was selected. False to abort program.
+     */
     private static boolean selectPassengerDataFile() {
         LOGGER.log(Level.INFO, "Asking User To Select Passenger Data File...");
-        FileDialog dialog = new FileDialog(new JFrame(), "Choose Passenger DataFile", FileDialog.LOAD); //Windows dialog to select file.
+        FileDialog dialog = new FileDialog(new JFrame(), "Choose Passenger DataFile", FileDialog.LOAD); //Dialog to select file.
         dialog.setVisible(true);
 
         if (dialog.getFile() == null) {
@@ -54,9 +64,13 @@ public class MainApplication
         }
     }
 
+    /**
+     * Opens the Save File  dialog which prompts the user to select the location to save the data file on Disk
+     * @return True if a location was selected. False to abort the program.
+     */
     private static boolean saveOutputFile() {
         LOGGER.log(Level.INFO, "Asking User To Save Output File..." );
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss"); //Default File Name is the current date & time.txt
         Calendar cal = Calendar.getInstance();
 
         FileDialog dialog = new FileDialog(new Frame(), "Save output file to..", FileDialog.SAVE);
