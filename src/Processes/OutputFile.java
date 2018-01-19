@@ -15,14 +15,14 @@ public class OutputFile {
      * This adds introduction text to the output file including the configuration parameters.
      */
     public static void addIntroText() {
-        write("Charles Knight -- 23012360 -- Advanced Computing CS3AC16\n-----------------------------------------------\n\n");
+        write("Charles Knight -- 23012360 -- Advanced Computing CS3AC16\r\n-----------------------------------------------\r\n\r\n");
 
-        String configText = "Configuration: \n" +
+        String configText = "Configuration: \r\n" +
                 "Maximum Simultaneous Mappers: " + Configuration.MAX_RUNNING_MAPPERS +
-                "\nMaximum Entries Per Mapper: " + Configuration.MAX_MAPPER_DATAENTRIES +
-                "\nMaximum Simultaneous Reducers: " + Configuration.MAX_RUNNING_REDUCERS +
-                "\nPassenger Data File Path:  " + Configuration.passengerDataFilePath +
-                "\nAirport Data File Path: " + Configuration.airportDataFilePath + "\n";
+                "\r\nMaximum Entries Per Mapper: " + Configuration.MAX_MAPPER_DATAENTRIES +
+                "\r\nMaximum Simultaneous Reducers: " + Configuration.MAX_RUNNING_REDUCERS +
+                "\r\nPassenger Data File Path:  " + Configuration.passengerDataFilePath +
+                "\r\nAirport Data File Path: " + Configuration.airportDataFilePath + "\r\n";
         write(configText);
     }
 
@@ -32,6 +32,7 @@ public class OutputFile {
      * @param text String to write to the text file.
      */
     public static void write(String text) {
+        text = text.replace("\n", "\r\n");
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(outputFile, true));
