@@ -9,5 +9,6 @@ public class Configuration {
     public static File passengerDataFilePath; //Set on program startup - An Passenger Data File on disk.
     public static File airportDataFilePath; //Set on program startup - An Top30 Data File on disk.
 
+    public static final boolean strictlyUseSpecValidation = false;
 
 }

@@ -35,7 +35,11 @@ public class AirportDetails extends AbstractDetails {
     @Override
     protected void performPatternValidation() {
         Pattern pattern_airportCode = Pattern.compile("[A-Z]{3}"); //Pattern XXX
-        Pattern pattern_airportName = Pattern.compile("[A-Z]{3,20}"); //Pattern A-Z 3 to 20 length //TODO: Clarify whether I should Include space & forward-slash (Half-results are eliminated otherwise)
+        Pattern pattern_airportName;
+        if (Configuration.strictlyUseSpecValidation) //See report, contesting the specification validation.
+            pattern_airportName = Pattern.compile("[A-Z]{3,20}"); //Pattern A-Z 3 to 20 length
+        else
+            pattern_airportName = Pattern.compile("[A-Z\\s]{3,20}"); //Pattern A-Z 3 to 20 length, Include Space
 
         if (!pattern_airportCode.matcher(this.airportCode).matches())
             super.handleError("Line: " + fromLineNumber + " Airport Code: '" + this.airportCode + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
