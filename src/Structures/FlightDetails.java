@@ -152,7 +152,7 @@ public class FlightDetails extends AbstractDetails {
 
     /**
      * Converts the epoch time into a formatted GMT Time as requested by the specification
-     * Reference: [TODO]
+     * Reference in report [9]
      * @return A string which is a human-readable GMT format conversion of the epoch time.
      */
     public String getFormattedDepartureTime() {

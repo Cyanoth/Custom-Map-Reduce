@@ -58,7 +58,7 @@ public class KeyValuePair implements Comparable<KeyValuePair> {
 
     /**
      * Necessary for the Comparable class. Allows quick sorting of the Mapped KeyValue pairs by key.
-     * Uses standard Java libraries to Alphabetically Sort by 'Key'. Ref [todo]
+     * Uses standard Java libraries to Alphabetically Sort by 'Key'. Ref [5]
      * @param com Compare this instance to another KeyValue Pair.
      * @return A integer either 0 if equal, 1 if greater or -1 if less than (alphabetical)
      */
