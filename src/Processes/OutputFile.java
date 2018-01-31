@@ -21,6 +21,7 @@ public class OutputFile {
                 "Maximum Simultaneous Mappers: " + Configuration.MAX_RUNNING_MAPPERS +
                 "\r\nMaximum Entries Per Mapper: " + Configuration.MAX_MAPPER_DATAENTRIES +
                 "\r\nMaximum Simultaneous Reducers: " + Configuration.MAX_RUNNING_REDUCERS +
+                "\r\nPermit Spaces in Airport Name (Strict Validation): " + Configuration.strictlyUseSpecValidation +
                 "\r\nPassenger Data File Path:  " + Configuration.passengerDataFilePath +
                 "\r\nAirport Data File Path: " + Configuration.airportDataFilePath + "\r\n";
         write(configText);
