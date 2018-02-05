@@ -35,11 +35,7 @@ public class AirportDetails extends AbstractDetails {
     @Override
     protected void performPatternValidation() {
         Pattern pattern_airportCode = Pattern.compile("[A-Z]{3}"); //Pattern XXX
-        Pattern pattern_airportName;
-        if (Configuration.strictlyUseSpecValidation) //See report, contesting the specification validation.
-            pattern_airportName = Pattern.compile("[A-Z]{3,20}"); //Pattern A-Z 3 to 20 length
-        else
-            pattern_airportName = Pattern.compile("[A-Z\\s]{3,20}"); //Pattern A-Z 3 to 20 length, Include Space
+        Pattern pattern_airportName = Pattern.compile("[A-Z\\s]{3,20}"); //Pattern A-Z 3 to 20 length, Including Space
 
         if (!pattern_airportCode.matcher(this.airportCode).matches())
             super.handleError("Line: " + fromLineNumber + " Airport Code: '" + this.airportCode + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
@@ -55,15 +51,14 @@ public class AirportDetails extends AbstractDetails {
      * @return  If successful, return it as a double. Otherwise generate error and return -1.
      */
     private double parseValidateLongitude(String parsevalue) {
-        try { //Try to convert from String to Double. If it fails, go to 'Catch'
-            double result = Double.parseDouble(parsevalue);
+        Pattern pattern_Longitude = Pattern.compile("-?\\d{1,3}\\.\\d{6}");
 
-            if (result > -180.0 && result < 180.0) //Check is within range for Longitude.
-                return result;
-            else {
-                super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It is not within range for longitude!)", ErrorType.Warning);
-                return -1;
-            }
+        if (!pattern_Longitude.matcher(parsevalue).matches())
+            super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+
+
+        try { //Try to convert from String to Double. If it fails, go to 'Catch'
+            return Double.parseDouble(parsevalue);
         }
         catch (NumberFormatException e) { //Can't convert ot Double.
             super.handleError("Line: " + fromLineNumber + " Longitude: '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
@@ -77,15 +72,13 @@ public class AirportDetails extends AbstractDetails {
      * @return  If successful, return it as a double. Otherwise generate error and return -1.
      */
     private double parseValidateLatitude(String parsevalue) {
-        try { //Try to convert from String to Double. If it fails, go to 'Catch'
-            double result = Double.parseDouble(parsevalue);
+        Pattern pattern_Latitude = Pattern.compile("-?\\d{1,2}\\.\\d{6}");
 
-            if (result > -90.0 && result < 90.0) //Check is within range for Latitude.
-                return result;
-            else {
-                super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It is not within range for longitude!)", ErrorType.Warning);
-                return -1;
-            }
+        if (!pattern_Latitude.matcher(parsevalue).matches())
+            super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It does not match the required pattern)", ErrorType.Warning);
+
+        try { //Try to convert from String to Double. If it fails, go to 'Catch'
+            return Double.parseDouble(parsevalue);
         }
         catch (NumberFormatException e) { //Can't convert ot Double.
             super.handleError("Line: " + fromLineNumber + " Latitude: '" + parsevalue + "' is invalid! (It is not a valid number.)", ErrorType.Warning);
